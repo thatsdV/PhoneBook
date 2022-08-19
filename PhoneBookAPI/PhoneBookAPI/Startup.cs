@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using PhoneBookAPI.Application.Commands.CreateContact;
 using System.Text.Json;
 
 namespace PhoneBookAPI
@@ -22,6 +24,12 @@ namespace PhoneBookAPI
             services.AddHttpContextAccessor();
 
             services.AddSwaggerGen();
+
+            services.AddMvc();
+
+            services.AddMediatR(typeof(CreateContactCommandHandler).Assembly);
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Configure<ApiBehaviorOptions>(options => options.SuppressInferBindingSourcesForParameters = true);
         }

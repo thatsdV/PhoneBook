@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using PhoneBookAPI.Application.DTOs;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,31 +10,54 @@ namespace PhoneBookAPI.Controllers
     [ApiController]
     public class ContactController : ControllerBase
     {
-        [HttpGet]
-        public IEnumerable<string> GetContacts()
+        private readonly IMediator _mediator;
+
+        public ContactController(IMediator mediator)
         {
-            return new string[] { "value1", "value2" };
+            _mediator = mediator;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetContactsResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetContacts([FromQuery] GetContactsRequest request)
+        {
+            var contacts = await _mediator.Send(request);
+            return Ok(contacts);
         }
 
         [HttpGet("{id}")]
-        public string GetContactById(int id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetContactByIdResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetContactById([FromQuery] GetContactByIdRequest request)
         {
-            return "value";
+            var contact = await _mediator.Send(request);
+            return Ok(contact);
         }
 
         [HttpPost]
-        public void CreateContact([FromBody] string value)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateContact([FromBody] CreateContactRequest request)
         {
+            var createdUser = await _mediator.Send(request);
+            return CreatedAtAction(nameof(GetContactById), createdUser, request);
         }
 
         [HttpPut("{id}")]
-        public void UpdateContact(int id, [FromBody] string value)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateContact([FromQuery] UpdateContactRequest request)
         {
+            return Ok(await _mediator.Send(request));
         }
 
         [HttpDelete("{id}")]
-        public void DeleteContact(int id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteContact([FromQuery] DeleteContactRequest request)
         {
+            return Ok(await _mediator.Send(request));
         }
     }
 }
