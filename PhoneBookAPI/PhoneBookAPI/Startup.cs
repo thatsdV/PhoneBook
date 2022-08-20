@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PhoneBookAPI.Application.Commands.CreateContact;
 using PhoneBookAPI.Application.Commands.GetContactById;
 using PhoneBookAPI.Application.DTOs;
+using PhoneBookAPI.Extensions;
 using System.Reflection;
 using System.Text.Json;
 
@@ -42,6 +43,8 @@ namespace PhoneBookAPI
             {
                 options.RegisterValidatorsFromAssembly(typeof(CreateContactCommandHandler).Assembly);
             });
+
+            services.ConfigureDatabase(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
