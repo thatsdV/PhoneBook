@@ -1,6 +1,11 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PhoneBookAPI.Application.Commands.CreateContact;
+using PhoneBookAPI.Application.Commands.GetContactById;
+using PhoneBookAPI.Application.DTOs;
+using System.Reflection;
 using System.Text.Json;
 
 namespace PhoneBookAPI
@@ -32,6 +37,11 @@ namespace PhoneBookAPI
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Configure<ApiBehaviorOptions>(options => options.SuppressInferBindingSourcesForParameters = true);
+
+            services.AddFluentValidation(options =>
+            {
+                options.RegisterValidatorsFromAssembly(typeof(CreateContactCommandHandler).Assembly);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

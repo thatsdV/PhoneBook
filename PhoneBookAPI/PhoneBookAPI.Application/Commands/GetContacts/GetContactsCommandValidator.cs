@@ -1,6 +1,17 @@
-﻿namespace PhoneBookAPI.Application.Commands.GetContacts
+﻿using FluentValidation;
+using PhoneBookAPI.Application.DTOs;
+using System.Net;
+
+namespace PhoneBookAPI.Application.Commands.GetContacts
 {
-    internal class GetContactsCommandValidator
+    public class GetContactsCommandValidator : AbstractValidator<GetContactsRequest>
     {
+        public GetContactsCommandValidator()
+        {
+            RuleFor(request => request)
+                .NotEmpty()
+                .NotNull()
+                .WithErrorCode(HttpStatusCode.BadRequest.ToString());
+        }
     }
 }
