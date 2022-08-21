@@ -29,7 +29,7 @@ namespace PhoneBookAPI.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetContactByIdResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetContactById([FromQuery] GetContactByIdRequest request)
+        public async Task<IActionResult> GetContactById(GetContactByIdRequest request)
         {
             var contact = await _mediator.Send(request);
             return Ok(contact);

@@ -40,9 +40,10 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
             }
         }
 
-        public async Task GetContactById()
+        public async Task<Contact> GetContactById(int id)
         {
-
+            var contact = await GetAsync(id);
+            return _mapper.Map<Contact>(contact);
         }
 
         public async Task GetContacts()
@@ -53,10 +54,24 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
             connection.Close();
         }
 
-        public async Task UpdateContact()
+        public async Task<bool> UpdateContact(int id)
         {
+            try
+            {
+                //using var connection = Connection;
+                //SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
+                //connection.Open();
+                //var numberRowsAffected = await connection.UpdateAsync<ContactDAO>(id);
+                //connection.Close();
 
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
+
         public async Task<bool> DeleteContact(int id)
         {
             try
