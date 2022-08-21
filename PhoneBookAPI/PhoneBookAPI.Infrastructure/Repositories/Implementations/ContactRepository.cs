@@ -46,12 +46,19 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
             return _mapper.Map<Contact>(contact);
         }
 
-        public async Task GetContacts()
-        {
+        public async Task<IEnumerable<Contact>> GetContacts(int pageNumber, int rowsPerPage)
+        {            
             using var connection = Connection;
+
+            SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
+
             connection.Open();
-            //var result = await connection.GetListPaged<ContactDAO>(1, 10, "1", "1");
+
+            var contactsList = await connection.GetListPagedAsync<ContactDAO>(pageNumber, rowsPerPage, string.Empty, string.Empty);
+
             connection.Close();
+
+            return _mapper.Map<IEnumerable<Contact>>(contactsList);
         }
 
         public async Task<bool> UpdateContact(int id)

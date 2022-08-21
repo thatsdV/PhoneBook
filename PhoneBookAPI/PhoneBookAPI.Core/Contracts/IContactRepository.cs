@@ -12,6 +12,6 @@ namespace PhoneBookAPI.Core.Contracts
 
         Task<Contact> GetContactById(int id);
 
-        Task GetContacts();
+        Task<IEnumerable<Contact>> GetContacts(int pageNumber, int rowsPerPage);
     }
 }

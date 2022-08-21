@@ -2,7 +2,7 @@
 
 namespace PhoneBookAPI.Application.DTOs
 {
-    public class GetContactsRequest : IRequest<GetContactsResponse>
+    public class GetContactsRequest : IRequest<IList<GetContactsResponse>>
     {
         public int PageNumber { get; set; }
 
