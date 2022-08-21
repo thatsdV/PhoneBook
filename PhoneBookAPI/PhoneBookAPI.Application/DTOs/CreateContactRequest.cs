@@ -12,8 +12,8 @@ namespace PhoneBookAPI.Application.DTOs
 
         public string? Email { get; set; }
 
-        public IList<string>? PhoneNumbers { get; set; }
+        //public IList<string>? PhoneNumbers { get; set; }
 
-        public string? Photo { get; set; }
+        //public string? Photo { get; set; }
     }
 }

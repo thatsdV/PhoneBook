@@ -1,12 +1,9 @@
-﻿using FluentValidation;
-using FluentValidation.AspNetCore;
+﻿using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PhoneBookAPI.Application.Commands.CreateContact;
-using PhoneBookAPI.Application.Commands.GetContactById;
-using PhoneBookAPI.Application.DTOs;
 using PhoneBookAPI.Extensions;
-using System.Reflection;
+using PhoneBookAPI.IoC;
 using System.Text.Json;
 
 namespace PhoneBookAPI
@@ -35,8 +32,6 @@ namespace PhoneBookAPI
 
             services.AddMediatR(typeof(CreateContactCommandHandler).Assembly);
 
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
             services.Configure<ApiBehaviorOptions>(options => options.SuppressInferBindingSourcesForParameters = true);
 
             services.AddFluentValidation(options =>
@@ -45,6 +40,8 @@ namespace PhoneBookAPI
             });
 
             services.ConfigureDatabase(Configuration);
+
+            services.RegisterRepositories();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -61,7 +58,7 @@ namespace PhoneBookAPI
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "PhoneBook project v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "PhoneBook v1");
             });
 
             app.UseEndpoints(endpoints =>

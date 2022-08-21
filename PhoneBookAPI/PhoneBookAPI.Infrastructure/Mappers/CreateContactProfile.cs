@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using PhoneBookAPI.Application.DTOs;
 using PhoneBookAPI.Core.Entities;
+using PhoneBookAPI.Infrastructure.Repositories.DAO;
 
-namespace PhoneBookAPI.Application.Mappers
+namespace PhoneBookAPI.Infrastructure.Mappers
 {
     public class CreateContactProfile : Profile
     {
         public CreateContactProfile()
         {
-            CreateMap<CreateContactRequest, Contact>();
+            CreateMap<Contact, ContactDAO>();
         }
     }
 }

@@ -2,24 +2,23 @@
 
 namespace PhoneBookAPI.Infrastructure.Migrations
 {
-    [Migration(1)]
-    public class AddContactTable : Migration
-    {      
+    [Migration(2)]
+    public class AddContactNumbersTable : Migration
+    {
         public override void Up()
         {
-            Create.Table("Contact")
+            Create.Table("Numbers")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
-                .WithColumn("FirstName").AsString()
-                .WithColumn("LastName").AsString()
-                .WithColumn("Email").AsString()
-                .WithColumn("Address").AsString()
+                .WithColumn("Number").AsString()
+                .WithColumn("Type").AsString()
+                .WithColumn("ContactId").AsInt64().ForeignKey("FK_Number_Contact", "Contact", "Id").NotNullable()
                 .WithColumn("CreatedDate").AsDateTime().WithDefaultValue(DateTime.UtcNow)
                 .WithColumn("UpdatedDate").AsString().WithDefaultValue(DateTime.UtcNow);
         }
 
         public override void Down()
         {
-            Delete.Table("Contact");
+            Delete.Table("Numbers");
         }
     }
 }
