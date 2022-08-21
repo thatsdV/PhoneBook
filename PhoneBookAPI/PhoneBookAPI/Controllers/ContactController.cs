@@ -55,7 +55,7 @@ namespace PhoneBookAPI.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteContact([FromQuery] DeleteContactRequest request)
+        public async Task<IActionResult> DeleteContact(DeleteContactRequest request)
         {
             return Ok(await _mediator.Send(request));
         }

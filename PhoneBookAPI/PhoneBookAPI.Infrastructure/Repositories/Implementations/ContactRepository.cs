@@ -57,11 +57,11 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
         {
 
         }
-        public async Task<bool> DeleteContact()
+        public async Task<bool> DeleteContact(int id)
         {
             try
             {
-                return await DeleteAsync("");
+                return await DeleteAsync(id);
             }
             catch (Exception ex)
             {

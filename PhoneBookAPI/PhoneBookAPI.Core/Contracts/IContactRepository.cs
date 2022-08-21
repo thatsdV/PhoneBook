@@ -6,7 +6,7 @@ namespace PhoneBookAPI.Core.Contracts
     {
         Task<int?> InsertContact(Contact input);
 
-        Task<bool> DeleteContact();
+        Task<bool> DeleteContact(int id);
 
         Task UpdateContact();
 
