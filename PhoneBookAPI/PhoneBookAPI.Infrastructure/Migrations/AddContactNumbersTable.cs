@@ -7,11 +7,11 @@ namespace PhoneBookAPI.Infrastructure.Migrations
     {
         public override void Up()
         {
-            Create.Table("Numbers")
+            Create.Table("ContactNumber")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Number").AsString()
                 .WithColumn("Type").AsString()
-                .WithColumn("ContactId").AsInt64().ForeignKey("FK_Number_Contact", "Contact", "Id").NotNullable()
+                .WithColumn("ContactId").AsInt64().ForeignKey("Contact", "Id").NotNullable()
                 .WithColumn("CreatedDate").AsDateTime().WithDefaultValue(DateTime.UtcNow)
                 .WithColumn("UpdatedDate").AsString().WithDefaultValue(DateTime.UtcNow);
         }

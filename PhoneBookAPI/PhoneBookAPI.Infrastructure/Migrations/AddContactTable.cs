@@ -8,7 +8,7 @@ namespace PhoneBookAPI.Infrastructure.Migrations
         public override void Up()
         {
             Create.Table("Contact")
-                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("Id").AsInt64().PrimaryKey().Unique()
                 .WithColumn("FirstName").AsString()
                 .WithColumn("LastName").AsString()
                 .WithColumn("Email").AsString()
