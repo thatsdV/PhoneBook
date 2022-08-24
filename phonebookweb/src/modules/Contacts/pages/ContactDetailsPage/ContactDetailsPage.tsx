@@ -1,4 +1,4 @@
-import { Link, useParams, Location} from "react-router-dom";
+import { Link, useParams, Location } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import "./ContactDetailsPage.css";
 import { useDeleteContact } from "../../hooks/use-delete-contact.hook";
@@ -20,7 +20,7 @@ export const ContactDetailsPage = () => {
 
   const onDeleteHandler = () => {
     setShowModal(false);
-    deleteContact(+id!);    
+    deleteContact(+id!);
   };
 
   const onDeleteClickHandler = () => {
@@ -42,7 +42,17 @@ export const ContactDetailsPage = () => {
         ></DeleteModal>
       )}
       <div>
-        <h1>Olá, este é o detalhe do contacto {contact?.firstName} {contact?.lastName}</h1>
+        <h1>
+          Olá, este é o detalhe do contacto {contact?.firstName}{" "}
+          {contact?.lastName}
+        </h1>
+        <h2>Aqui temos o email {contact?.email}</h2>
+        <h2>Aqui temos a morada {contact?.address}</h2>
+        {contact?.phoneNumbers.map((number) => (
+          <h2>
+            Aqui o número do tipo {number.type}: {number.number}
+          </h2>
+        ))}
         <Link to="/contact">
           <button>Voltar</button>
         </Link>

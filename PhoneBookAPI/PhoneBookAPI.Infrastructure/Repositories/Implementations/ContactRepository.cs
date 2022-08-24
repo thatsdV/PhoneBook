@@ -63,12 +63,21 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
                 return contact;
             });
 
-            var result = contactDao.GroupBy(p => p.Id).Select(g =>
+            var result = contactDao;
+
+            if (contactDao != null && contactDao.Count() > 1)
             {
-                var groupedContact = g.First();
-                groupedContact.PhoneNumbers = g.Select(p => p.PhoneNumbers.Single()).ToList();
-                return groupedContact;
-            });
+                result = contactDao.GroupBy(p => p.Id).Select(g =>
+                {
+                    var groupedContact = g.First();
+                    if (groupedContact.PhoneNumbers != null)
+                    {
+                        groupedContact.PhoneNumbers = g.Select(p => p.PhoneNumbers.Single()).ToList();
+                    }
+
+                    return groupedContact;
+                });
+            }            
 
             conn.Close();
 
