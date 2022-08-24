@@ -6,10 +6,17 @@ namespace PhoneBookAPI.IoC
 {
     public static class IoC
     {
-        public static void RegisterRepositories(this IServiceCollection services)
+        public static void RegisterIoC(this IServiceCollection services)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.RegisterRepositories();
+        }
+
+        private static void RegisterRepositories(this IServiceCollection services)
+        {
             services.AddScoped<IContactRepository, ContactRepository>();
+            services.AddScoped<IContactNumberRepository, ContactNumberRepository>();
+            services.AddScoped<IContactGroupRepository, ContactGroupRepository>();
         }
     }
 }

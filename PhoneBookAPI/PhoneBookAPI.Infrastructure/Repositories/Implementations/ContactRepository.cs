@@ -27,11 +27,9 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
 
                 var inserted = (int?)await InsertAsync<ContactDAO>(contact);
 
-                if (inserted.HasValue)                    
-                    return inserted.Value;
-
                 transaction.Complete();
-                return null;                         
+
+                return inserted;
             }
             catch (Exception ex)
             {
@@ -42,12 +40,43 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
 
         public async Task<Contact> GetContactById(int id)
         {
-            var contact = await GetAsync(id);
-            return _mapper.Map<Contact>(contact);
+            string sql = $@"SELECT *
+                            FROM Contact c 
+                            LEFT JOIN ContactNumber cn on cn.ContactId = c.Id
+                            WHERE c.Id = {id}";
+
+            using var conn = Connection;
+            SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
+
+            conn.Open();
+
+            var contactDao = await conn.QueryAsync<ContactDAO, ContactNumberDAO, ContactDAO>(sql, (contact, number) =>
+            {
+                if (contact.PhoneNumbers == null)
+                    contact.PhoneNumbers = new List<ContactNumberDAO>();
+
+                if (number != null)
+                {
+                    contact.PhoneNumbers.Add(number);
+                }
+
+                return contact;
+            });
+
+            var result = contactDao.GroupBy(p => p.Id).Select(g =>
+            {
+                var groupedContact = g.First();
+                groupedContact.PhoneNumbers = g.Select(p => p.PhoneNumbers.Single()).ToList();
+                return groupedContact;
+            });
+
+            conn.Close();
+
+            return _mapper.Map<Contact>(result.FirstOrDefault());
         }
 
         public async Task<IEnumerable<Contact>> GetContacts(int pageNumber, int rowsPerPage)
-        {            
+        {
             using var connection = Connection;
 
             SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);

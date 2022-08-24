@@ -41,7 +41,19 @@ namespace PhoneBookAPI
 
             services.ConfigureDatabase(Configuration);
 
-            services.RegisterRepositories();
+            services.RegisterIoC();
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins(Configuration.GetSection("AllowedCorsUrls").Get<string[]>())
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin();
+
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -54,6 +66,8 @@ namespace PhoneBookAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

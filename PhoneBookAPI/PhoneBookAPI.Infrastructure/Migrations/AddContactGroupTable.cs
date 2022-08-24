@@ -18,8 +18,8 @@ namespace PhoneBookAPI.Infrastructure.Migrations
                 .WithColumn("CreatedDate").AsDateTime().WithDefaultValue(DateTime.UtcNow)
                 .WithColumn("UpdatedDate").AsString().WithDefaultValue(DateTime.UtcNow);
 
-            Create.Column("GroupId")
-                .OnTable("Contact")
+            Alter.Table("Contact")
+                .AddColumn("GroupId")
                 .AsInt64()
                 .ForeignKey("ContactGroup", "Id")
                 .Nullable();

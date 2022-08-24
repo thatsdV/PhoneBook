@@ -15,7 +15,7 @@ namespace PhoneBookAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetContactsResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetContactNumbers()
         {
@@ -26,7 +26,7 @@ namespace PhoneBookAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateContactNumbers([FromBody] CreateContactNumbersRequest request)
+        public async Task<IActionResult> CreateContactNumbers([FromBody] string request)
         {
             var createdNumbers = await _mediator.Send(request);
             return CreatedAtAction(nameof(GetContactNumbers), createdNumbers, request);
@@ -35,7 +35,7 @@ namespace PhoneBookAPI.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateContactNumbers([FromQuery] UpdateContactNumbersRequest request)
+        public async Task<IActionResult> UpdateContactNumbers([FromQuery] string request)
         {
             return Ok(await _mediator.Send(request));
         }
@@ -43,7 +43,7 @@ namespace PhoneBookAPI.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteContact(DeleteContactNumbersRequest request)
+        public async Task<IActionResult> DeleteContact(string request)
         {
             return Ok(await _mediator.Send(request));
         }

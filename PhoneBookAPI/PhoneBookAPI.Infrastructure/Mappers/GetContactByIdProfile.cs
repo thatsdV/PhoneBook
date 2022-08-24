@@ -9,6 +9,8 @@ namespace PhoneBookAPI.Infrastructure.Mappers
         public GetContactByIdProfile()
         {
             CreateMap<ContactDAO, Contact>();
+
+            CreateMap<ContactNumberDAO, ContactNumber>();
         }
     }
 }

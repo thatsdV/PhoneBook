@@ -10,7 +10,8 @@ export const Home = () => {
         <p>
           Bem vindo à tua lista de contactos
         </p>        
-        <Link to='/contact'><button>carrega</button></Link>
+        <Link to='/contact'><button>contactos</button></Link>
+        <Link to='/group'><button>grupos</button></Link>
       </header>
     </div>
   );

@@ -18,6 +18,9 @@ namespace PhoneBookAPI.Infrastructure.Repositories.DAO
 
         public string Address { get; set; }
 
+        [NotMapped]
+        public IList<ContactNumberDAO> PhoneNumbers { get; set; }
+
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
