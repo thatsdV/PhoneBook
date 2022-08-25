@@ -9,8 +9,9 @@ namespace PhoneBookAPI.Infrastructure.Migrations
         {
             Create.Table("Contact")
                 .WithColumn("Id").AsInt64().PrimaryKey().Unique()
-                .WithColumn("FirstName").AsString()
-                .WithColumn("LastName").AsString()
+                .WithColumn("FirstName").AsString().NotNullable()
+                .WithColumn("LastName").AsString().NotNullable()
+                .WithColumn("FullName").AsString().NotNullable()
                 .WithColumn("Email").AsString()
                 .WithColumn("Address").AsString()
                 .WithColumn("CreatedDate").AsDateTime().WithDefaultValue(DateTime.UtcNow)

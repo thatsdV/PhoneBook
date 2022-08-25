@@ -1,0 +1,27 @@
+.pagination .selected a {
+    box-shadow: 0 0 2px #1b7d9e;
+    background-color: #f3fcff;
+}
+
+.pagination .disabled>a {
+    color: #ccc;
+    background-color: #f8f8f8;
+    border-color: #eee;
+    cursor: default;
+}
+
+.pagination .disabled>a:hover {
+    background-color: #f8f8f8;
+}
+
+.pagination .break {
+    margin: 0 8px;
+}
+
+.pagination .previous {
+    margin-right: 1rem;
+}
+
+.pagination .next {
+    margin-left: 1rem;
+}

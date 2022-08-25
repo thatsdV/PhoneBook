@@ -1,4 +1,5 @@
 ﻿using PhoneBookAPI.Core.Entities;
+using PhoneBookAPI.Core.Model;
 
 namespace PhoneBookAPI.Core.Contracts
 {
@@ -12,6 +13,6 @@ namespace PhoneBookAPI.Core.Contracts
 
         Task<Contact> GetContactById(int id);
 
-        Task<IEnumerable<Contact>> GetContacts(int pageNumber, int rowsPerPage);
+        Task<IEnumerable<Contact>> GetContacts(GetContactsInput input);
     }
 }

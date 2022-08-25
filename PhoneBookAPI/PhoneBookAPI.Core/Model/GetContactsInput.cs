@@ -1,8 +1,6 @@
-﻿using MediatR;
-
-namespace PhoneBookAPI.Application.DTOs
+﻿namespace PhoneBookAPI.Core.Model
 {
-    public class GetContactsRequest : IRequest<IList<GetContactsResponse>>
+    public class GetContactsInput
     {
         public int PageNumber { get; set; }
 

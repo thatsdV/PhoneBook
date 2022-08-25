@@ -1,4 +1,4 @@
-import { GrClose } from "react-icons/gr";
+import { MdDeleteForever } from "react-icons/md";
 import "./DeleteModal.css";
 
 type DeleteModalProps = {
@@ -21,7 +21,7 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({
         <div className="modal-content">
           <div className="modal-header flex-column">
             <div className="icon-box">
-              <GrClose size={50} className="icon-close" />
+              <MdDeleteForever size={50} className="icon-close" />
             </div>
             <h4>
               {type === "group"

@@ -1,33 +1,46 @@
-import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
-import { Button } from "../../../../components";
+import { Button, SearchBar } from "../../../../components";
 import { AddContact, Contact } from "../../components";
-import { useGetContacts } from "../../hooks/use-get-contactsList.hook";
+import { useGetContacts } from "../../hooks";
+import classnames from "classnames";
 
+import styles from "./Pagination.module.css";
+import "./Pagination.css";
 import "./ContactListPage.css";
+import { ChangeEvent } from "react";
+
 export const ContactListPage = () => {
-  const { contacts, getContacts } = useGetContacts();
-  const [isAdding, setIsAdding] = useState(false);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-
-  useEffect(() => {
-    getContacts(pageNumber, itemsPerPage);
-  }, [isAdding, pageNumber, itemsPerPage]);
-
-  const toggleAddingState = () => {
-    setIsAdding((currentState) => !currentState);
-  };
+  const {
+    contacts,
+    onChangeSearchCriteria,
+    toggleAddingState,
+    setPageNumber,
+    setItemsPerPage,
+    searchCriteria,
+  } = useGetContacts();
 
   const handlePageClick = (event: { selected: number }) => {
     setPageNumber(event.selected + 1);
+  };
+
+  const handleItemsPerPageSelected = (
+    event: ChangeEvent<HTMLSelectElement>
+  ) => {
+    console.log(event.target.value);
+    //setItemsPerPage(event.selected);
   };
 
   return (
     <section className="list">
       <div>
         <h1>Lista de Contactos</h1>
+      </div>
+      <div>
+        <SearchBar
+          tip="Escreva o nome do contacto..."
+          onChange={onChangeSearchCriteria}
+        />
       </div>
       {contacts.map((contact) => (
         <div className="contact" key={`ContactItem_${contact.id}`}>
@@ -37,28 +50,35 @@ export const ContactListPage = () => {
       {contacts.length <= 0 && (
         <div className="list-empty">
           <div>
-            {/* {search ? (
-                <>
-                  <strong>Nenhum contato encontrado...</strong>
-                  <p>Busque por outro ou adicione um novo</p>
-                </>
-              ) : ( */}
-            <>
-              <strong>Não existem contactos na lista</strong>
-              <p>Adicione novos contactos</p>
-            </>
-            {/* )} */}
+            {searchCriteria ? (
+              <>
+                <strong>Nenhum contato encontrado...</strong>
+                <p>Busque por outro ou adicione um novo</p>
+              </>
+            ) : (
+              <>
+                <strong>Não existem contactos na lista</strong>
+                <p>Adicione novos contactos</p>
+              </>
+            )}
           </div>
         </div>
       )}
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel="Próxima"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={5}
-        pageCount={10}
-        previousLabel="Anterior"
-      />
+      <div className={classnames("pagination", styles.pagination)}>
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel=">"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={5}
+          pageCount={10}
+          previousLabel="<"
+        />
+        <select id="itemsPerPage" onChange={handleItemsPerPageSelected}>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
       <Link to="/">
         <Button label="Voltar" />
       </Link>

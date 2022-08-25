@@ -3,6 +3,7 @@ using Dapper;
 using Microsoft.Extensions.Configuration;
 using PhoneBookAPI.Core.Contracts;
 using PhoneBookAPI.Core.Entities;
+using PhoneBookAPI.Core.Model;
 using PhoneBookAPI.Infrastructure.Repositories.DAO;
 using System.Transactions;
 
@@ -77,22 +78,27 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
 
                     return groupedContact;
                 });
-            }            
+            }
 
             conn.Close();
 
             return _mapper.Map<Contact>(result.FirstOrDefault());
         }
 
-        public async Task<IEnumerable<Contact>> GetContacts(int pageNumber, int rowsPerPage)
+        public async Task<IEnumerable<Contact>> GetContacts(GetContactsInput input)
         {
             using var connection = Connection;
 
             SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
 
+            string t = "";
+
             connection.Open();
 
-            var contactsList = await connection.GetListPagedAsync<ContactDAO>(pageNumber, rowsPerPage, string.Empty, string.Empty);
+            var contactsList = await connection.GetListPagedAsync<ContactDAO>(input.PageNumber, input.ItemsPerPage, 
+                //$@"where (FullName like %{input.SearchCriteria}% or PreferedNumber like %{input.SearchCriteria}%)",
+                $@"where FullName like '%{input.SearchCriteria}%'",
+                string.Empty);
 
             connection.Close();
 

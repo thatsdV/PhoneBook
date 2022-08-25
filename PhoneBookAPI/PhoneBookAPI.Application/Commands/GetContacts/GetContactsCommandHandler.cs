@@ -2,6 +2,7 @@
 using MediatR;
 using PhoneBookAPI.Application.DTOs;
 using PhoneBookAPI.Core.Contracts;
+using PhoneBookAPI.Core.Model;
 
 namespace PhoneBookAPI.Application.Commands.GetContacts
 {
@@ -18,7 +19,8 @@ namespace PhoneBookAPI.Application.Commands.GetContacts
 
         public async Task<IList<GetContactsResponse>> Handle(GetContactsRequest request, CancellationToken cancellationToken)
         {
-            var contactsList = await _repository.GetContacts(request.PageNumber, request.PageSize);
+            var paginationCriteria = _mapper.Map<GetContactsInput>(request);
+            var contactsList = await _repository.GetContacts(paginationCriteria);
             return _mapper.Map<List<GetContactsResponse>>(contactsList);
         }
     }

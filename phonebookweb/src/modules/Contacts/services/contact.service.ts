@@ -41,8 +41,16 @@ export class ContactService {
     return axios.get(url.concat(`/${id}`));
   }
 
-  static GetContactsList(pageNumber: number, pageSize: number) {
-    return axios.get(url.concat(`?PageNumber=${pageNumber}&PageSize=${pageSize}`));
+  static GetContactsList(
+    pageNumber: number,
+    itemsPerPage: number,
+    searchCriteria: string
+  ) {
+    const urlQuery = searchCriteria
+      ? `?PageNumber=${pageNumber}&ItemsPerPage=${itemsPerPage}&SearchCriteria=${searchCriteria}`
+      : `?PageNumber=${pageNumber}&ItemsPerPage=${itemsPerPage}`;
+
+    return axios.get(url.concat(urlQuery));
   }
 
   static DeleteContact(id: number) {

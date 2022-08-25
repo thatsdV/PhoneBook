@@ -1,11 +1,10 @@
-import { Link, useParams, Location } from "react-router-dom";
-import { MdDeleteForever } from "react-icons/md";
-import "./ContactDetailsPage.css";
-import { useDeleteContact } from "../../hooks/use-delete-contact.hook";
-import { confirmAlert } from "react-confirm-alert";
-import { DeleteModal } from "../../../../components/DeleteModal/DeleteModal";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useGetContactById } from "../../hooks/use-get-contactById.hook";
+import { MdDeleteForever } from "react-icons/md";
+import { useDeleteContact, useGetContactById } from "../../hooks";
+import { DeleteModal } from "../../../../components/";
+
+import "./ContactDetailsPage.css";
 
 export const ContactDetailsPage = () => {
   const [showModal, setShowModal] = useState(false);
