@@ -91,13 +91,15 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
 
             SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
 
-            string t = "";
+            //$@"where (FullName like %{input.SearchCriteria}% or PreferedNumber like %{input.SearchCriteria}%)",
+            string searchCriteriaSQL = input.SearchCriteria != null ? 
+                $@"where FullName like '%{input.SearchCriteria}%'" : 
+                string.Empty;
 
             connection.Open();
 
-            var contactsList = await connection.GetListPagedAsync<ContactDAO>(input.PageNumber, input.ItemsPerPage, 
-                //$@"where (FullName like %{input.SearchCriteria}% or PreferedNumber like %{input.SearchCriteria}%)",
-                $@"where FullName like '%{input.SearchCriteria}%'",
+            var contactsList = await connection.GetListPagedAsync<ContactDAO>(input.PageNumber, input.ItemsPerPage,
+                searchCriteriaSQL,
                 string.Empty);
 
             connection.Close();
