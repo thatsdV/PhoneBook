@@ -16,8 +16,14 @@ interface ContactEntity {
   photo: string;
 }
 
+interface PagedContacts {
+  totalPages: number;
+  totalRecords: number;
+  contacts: ContactEntity[];
+}
+
 export const useGetContacts = () => {
-  const [contacts, setContacts] = useState<ContactEntity[]>([]);
+  const [pagedContacts, setPagedContacts] = useState<PagedContacts>();
   const [pageNumber, setPageNumber] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [isAdding, setIsAdding] = useState(false);
@@ -49,12 +55,12 @@ export const useGetContacts = () => {
       itemsPerPage,
       searchCriteria
     ).then((response) => {
-      setContacts(response.data);
+      setPagedContacts(response.data);
     });
   };
 
   return {
-    contacts,
+    pagedContacts,
     getContacts,
     onChangeSearchCriteria,
     toggleAddingState,

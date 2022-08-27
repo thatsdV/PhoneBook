@@ -13,6 +13,6 @@ namespace PhoneBookAPI.Core.Contracts
 
         Task<Contact> GetContactById(int id);
 
-        Task<IEnumerable<Contact>> GetContacts(GetContactsInput input);
+        Task<GetContactsOutput> GetContacts(GetContactsInput input);
     }
 }

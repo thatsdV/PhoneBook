@@ -1,5 +1,14 @@
 import axios from "axios";
 
+interface NewContact {
+  firstName: string;
+  lastName: string;
+  address: string;
+  email: string;
+  phoneNumbers: PhoneNumbers[];
+  photo: string;
+}
+
 interface PhoneNumbers {
   number: string;
   type: string;
@@ -8,32 +17,28 @@ interface PhoneNumbers {
 const url = "https://localhost:7080/api/contact";
 
 export class ContactService {
-  static CreateNewContact(
-    firstName: string,
-    lastName: string,
-    address: string,
-    email: string,
-    phoneNumbers: PhoneNumbers[],
-    photo: string
-  ) {
+  static CreateNewContact(contact: NewContact) {
     axios.post(url, {
-      firstName: firstName,
-      lastName: lastName,
-      address: address,
-      email: email,
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      address: contact.address,
+      email: contact.email,
       phoneNumbers:
-        phoneNumbers !== undefined && phoneNumbers.length > 0
-          ? phoneNumbers.reduce((filtered: PhoneNumbers[], phoneNumber) => {
-              if (phoneNumber.number.length > 0) {
-                filtered.push({
-                  number: phoneNumber.number,
-                  type: phoneNumber.type,
-                });
-              }
-              return filtered;
-            }, [])
+        contact.phoneNumbers !== undefined && contact.phoneNumbers.length > 0
+          ? contact.phoneNumbers.reduce(
+              (filtered: PhoneNumbers[], phoneNumber) => {
+                if (phoneNumber.number.length > 0) {
+                  filtered.push({
+                    number: phoneNumber.number,
+                    type: phoneNumber.type,
+                  });
+                }
+                return filtered;
+              },
+              []
+            )
           : [],
-      photo: photo,
+      photo: contact.photo,
     });
   }
 

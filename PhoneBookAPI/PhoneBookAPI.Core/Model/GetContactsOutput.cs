@@ -1,10 +1,10 @@
 ﻿using PhoneBookAPI.Core.Entities;
 
-namespace PhoneBookAPI.Application.DTOs
+namespace PhoneBookAPI.Core.Model
 {
-    public class GetContactsResponse
+    public class GetContactsOutput
     {
-        public int TotalPages { get; set; }
+        public decimal TotalPages { get; set; }
 
         public int TotalRecords { get; set; }
 

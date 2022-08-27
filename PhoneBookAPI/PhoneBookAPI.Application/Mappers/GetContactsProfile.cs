@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using PhoneBookAPI.Application.DTOs;
-using PhoneBookAPI.Core.Entities;
 using PhoneBookAPI.Core.Model;
 
 namespace PhoneBookAPI.Application.Mappers
@@ -11,7 +10,7 @@ namespace PhoneBookAPI.Application.Mappers
         {
             CreateMap<GetContactsRequest, GetContactsInput>();
 
-            CreateMap<Contact, GetContactsResponse>();
+            CreateMap<GetContactsOutput, GetContactsResponse>();
         }
     }
 }

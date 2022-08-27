@@ -1,17 +1,19 @@
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { MdDeleteForever } from "react-icons/md";
 import { useDeleteContact, useGetContactById } from "../../hooks";
 import { DeleteModal } from "../../../../components/";
 
-import "./ContactDetailsPage.css";
+import "./ContactDetails.css";
+type ContactDetailsProps = {
+  id: number;
+};
 
-export const ContactDetailsPage = () => {
+export const ContactDetails: React.FC<ContactDetailsProps> = ({ id }) => {
   const [showModal, setShowModal] = useState(false);
-  const { id } = useParams();
 
   useEffect(() => {
-    getContactById(+id!);
+    getContactById(id);
   }, [id]);
 
   const { deleteContact } = useDeleteContact();
@@ -19,7 +21,7 @@ export const ContactDetailsPage = () => {
 
   const onDeleteHandler = () => {
     setShowModal(false);
-    deleteContact(+id!);
+    deleteContact(id);
   };
 
   const onDeleteClickHandler = () => {
@@ -31,7 +33,7 @@ export const ContactDetailsPage = () => {
   };
 
   return (
-    <>
+    <div className="accordion-item">
       {showModal && (
         <DeleteModal
           type="contact"
@@ -41,24 +43,24 @@ export const ContactDetailsPage = () => {
         ></DeleteModal>
       )}
       <div>
-        <h1>
+        <p>
           Olá, este é o detalhe do contacto {contact?.firstName}{" "}
           {contact?.lastName}
-        </h1>
-        <h2>Aqui temos o email {contact?.email}</h2>
-        <h2>Aqui temos a morada {contact?.address}</h2>
+        </p>
+        <p>Aqui temos o email {contact?.email}</p>
+        <p>Aqui temos a morada {contact?.address}</p>
         {contact?.phoneNumbers.map((number) => (
-          <h2>
+          <p>
             Aqui o número do tipo {number.type}: {number.number}
-          </h2>
+          </p>
         ))}
-        <Link to="/contact">
+        {/* <Link to="/contact">
           <button>Voltar</button>
-        </Link>
+        </Link> */}
         <button className="btn-delete" onClick={onDeleteClickHandler}>
           <MdDeleteForever size={50} />
         </button>
       </div>
-    </>
+    </div>
   );
 };

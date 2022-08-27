@@ -1,0 +1,28 @@
+
+INSERT INTO ContactGroup (Name)
+VALUES
+  ("Tempor Arcu Vestibulum Institute"),
+  ("Ac Ipsum Phasellus LLC"),
+  ("Sem Consequat Consulting"),
+  ("Vitae Institute"),
+  ("Suspendisse Ac Metus Corporation"),
+  ("Elit Sed Consequat Corporation"),
+  ("Amet Foundation"),
+  ("Feugiat Sed Ltd"),
+  ("Semper Associates"),
+  ("Pede Malesuada Vel Industries"),
+  ("Pellentesque Ultricies Incorporated"),
+  ("Lobortis Quam A Incorporated"),
+  ("Ultrices A PC"),
+  ("Consectetuer Rhoncus Incorporated"),
+  ("Mattis Industries"),
+  ("Dolor Donec Corp."),
+  ("Mollis PC"),
+  ("Nullam Feugiat Industries"),
+  ("Cras Institute"),
+  ("Ac Sem Incorporated"),
+  ("Curabitur Vel Lectus LLC"),
+  ("Sed Facilisis Incorporated"),
+  ("Iaculis Nec Eleifend LLC"),
+  ("Lacus Ut Corp."),
+  ("At Auctor Industries");

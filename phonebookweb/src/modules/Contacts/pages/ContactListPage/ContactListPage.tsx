@@ -1,24 +1,27 @@
-import ReactPaginate from "react-paginate";
-import { Link } from "react-router-dom";
-import { Button, SearchBar } from "../../../../components";
-import { AddContact, Contact } from "../../components";
-import { useGetContacts } from "../../hooks";
-import classnames from "classnames";
-
-import styles from "./Pagination.module.css";
-import "./Pagination.css";
-import "./ContactListPage.css";
 import { ChangeEvent } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import {
+  Button,
+  Pagination,
+  SearchBar,
+  SelectItemsPerPage,
+} from "../../../../components";
+import { AddContact, Contact, ContactEmptySearch } from "../../components";
+import { useGetContacts } from "../../hooks";
+
+import "./ContactListPage.css";
 
 export const ContactListPage = () => {
   const {
-    contacts,
+    pagedContacts,
     onChangeSearchCriteria,
     toggleAddingState,
     setPageNumber,
     setItemsPerPage,
     searchCriteria,
   } = useGetContacts();
+
+  let [searchParams, setSearchParams] = useSearchParams();
 
   const handlePageClick = (event: { selected: number }) => {
     setPageNumber(event.selected + 1);
@@ -27,8 +30,7 @@ export const ContactListPage = () => {
   const handleItemsPerPageSelected = (
     event: ChangeEvent<HTMLSelectElement>
   ) => {
-    console.log(event.target.value);
-    //setItemsPerPage(event.selected);
+    setItemsPerPage(+event.target.value);
   };
 
   return (
@@ -42,43 +44,14 @@ export const ContactListPage = () => {
           onChange={onChangeSearchCriteria}
         />
       </div>
-      {contacts.map((contact) => (
+      {pagedContacts?.contacts?.map((contact) => (
         <div className="contact" key={`ContactItem_${contact.id}`}>
           <Contact contact={contact} />
         </div>
       ))}
-      {contacts.length <= 0 && (
-        <div className="list-empty">
-          <div>
-            {searchCriteria ? (
-              <>
-                <strong>Nenhum contato encontrado...</strong>
-                <p>Busque por outro ou adicione um novo</p>
-              </>
-            ) : (
-              <>
-                <strong>Não existem contactos na lista</strong>
-                <p>Adicione novos contactos</p>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-      <div className={classnames("pagination", styles.pagination)}>
-        <ReactPaginate
-          breakLabel="..."
-          nextLabel=">"
-          onPageChange={handlePageClick}
-          pageRangeDisplayed={5}
-          pageCount={10}
-          previousLabel="<"
-        />
-        <select id="itemsPerPage" onChange={handleItemsPerPageSelected}>
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
-        </select>
-      </div>
+      {/* {pagedContacts?.contacts? && <ContactEmptySearch search={searchCriteria} />} */}
+      <Pagination onPageClick={handlePageClick} pageCount={pagedContacts?.totalPages!} />
+      <SelectItemsPerPage onChange={handleItemsPerPageSelected} />
       <Link to="/">
         <Button label="Voltar" />
       </Link>

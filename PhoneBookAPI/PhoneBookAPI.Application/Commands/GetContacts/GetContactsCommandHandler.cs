@@ -6,7 +6,7 @@ using PhoneBookAPI.Core.Model;
 
 namespace PhoneBookAPI.Application.Commands.GetContacts
 {
-    public class GetContactsCommandHandler : IRequestHandler<GetContactsRequest, IList<GetContactsResponse>>
+    public class GetContactsCommandHandler : IRequestHandler<GetContactsRequest, GetContactsResponse>
     {
         private readonly IMapper _mapper;
         private readonly IContactRepository _repository;
@@ -17,11 +17,11 @@ namespace PhoneBookAPI.Application.Commands.GetContacts
             _repository = repository;
         }
 
-        public async Task<IList<GetContactsResponse>> Handle(GetContactsRequest request, CancellationToken cancellationToken)
+        public async Task<GetContactsResponse> Handle(GetContactsRequest request, CancellationToken cancellationToken)
         {
             var paginationCriteria = _mapper.Map<GetContactsInput>(request);
             var contactsList = await _repository.GetContacts(paginationCriteria);
-            return _mapper.Map<List<GetContactsResponse>>(contactsList);
+            return _mapper.Map<GetContactsResponse>(contactsList);
         }
     }
 }

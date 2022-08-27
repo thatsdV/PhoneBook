@@ -85,26 +85,41 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
             return _mapper.Map<Contact>(result.FirstOrDefault());
         }
 
-        public async Task<IEnumerable<Contact>> GetContacts(GetContactsInput input)
+        public async Task<GetContactsOutput> GetContacts(GetContactsInput input)
         {
+            GetContactsOutput result = new();
+
             using var connection = Connection;
 
             SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
 
             //$@"where (FullName like %{input.SearchCriteria}% or PreferedNumber like %{input.SearchCriteria}%)",
-            string searchCriteriaSQL = input.SearchCriteria != null ? 
-                $@"where FullName like '%{input.SearchCriteria}%'" : 
+            string searchCriteriaSQL = input.SearchCriteria != null ?
+                $@"where FullName like '%{input.SearchCriteria}%'" :
                 string.Empty;
 
             connection.Open();
 
-            var contactsList = await connection.GetListPagedAsync<ContactDAO>(input.PageNumber, input.ItemsPerPage,
+            var contactsList = await connection.GetListPagedAsync<ContactDAO>(input.PageNumber - 1, input.ItemsPerPage,
                 searchCriteriaSQL,
                 string.Empty);
 
+            var totalRecords = await connection.RecordCountAsync<ContactDAO>(searchCriteriaSQL);
+            var totalPages = (int)Math.Ceiling((totalRecords / (decimal)input.ItemsPerPage));
+
             connection.Close();
 
-            return _mapper.Map<IEnumerable<Contact>>(contactsList);
+            if (contactsList != null)
+            {
+                result = new GetContactsOutput
+                {
+                    Contacts = _mapper.Map<IList<Contact>>(contactsList),
+                    TotalPages = totalPages,
+                    TotalRecords = totalRecords
+                };
+            }
+
+            return result;
         }
 
         public async Task<bool> UpdateContact(int id)
