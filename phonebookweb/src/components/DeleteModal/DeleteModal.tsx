@@ -30,10 +30,7 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({
             </h4>
           </div>
           <div className="modal-body">
-            <p>
-              Tem a certeza que pretende prosseguir? Este processo não pode ser
-              revertido.
-            </p>
+            <p>Este processo não pode ser revertido.</p>
           </div>
           <div className="modal-footer justify-content-center">
             <button

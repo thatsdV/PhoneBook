@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 using PhoneBookAPI.Core.Contracts;
 using PhoneBookAPI.Core.Entities;
@@ -35,6 +36,25 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
                 transaction.Dispose();
                 throw ex;
             }
+        }
+
+        public async Task<ContactNumber> GetPreferedContactNumber(int contactId)
+        {
+            string sql = $@"SELECT *
+                            FROM ContactNumber 
+                            WHERE ContactId = {contactId}
+                            LIMIT 1";
+
+            using var conn = Connection;
+            SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
+
+            conn.Open();
+
+            var contactNumberDao = await conn.QueryAsync<ContactNumberDAO>(sql);
+
+            conn.Close();
+
+            return _mapper.Map<ContactNumber>(contactNumberDao.FirstOrDefault());
         }
     }
 }

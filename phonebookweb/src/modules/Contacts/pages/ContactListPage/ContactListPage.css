@@ -12,3 +12,41 @@
   margin-top: 20px;
 }
 
+.contact {
+  width: 100%;
+  color: white;
+  border-radius: 50px;
+  transition: 0.4s;
+  max-width: 30rem;
+  background: dimgray;
+}
+
+.contact img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.contact-initials {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  color: black;
+  background-color: white;
+  font-size: 40px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.contact:hover {
+  background: #525252;
+}
+
+.contact:hover .delete,
+.contact:hover .email,
+.contact:hover .edit {
+  opacity: 1;
+}

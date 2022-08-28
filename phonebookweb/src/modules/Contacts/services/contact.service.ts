@@ -7,6 +7,7 @@ interface NewContact {
   email: string;
   phoneNumbers: PhoneNumbers[];
   photo: string;
+  fullName: string;
 }
 
 interface PhoneNumbers {
@@ -49,11 +50,16 @@ export class ContactService {
   static GetContactsList(
     pageNumber: number,
     itemsPerPage: number,
-    searchCriteria: string
+    searchCriteria: string,
+    orderBy: string
   ) {
-    const urlQuery = searchCriteria
-      ? `?PageNumber=${pageNumber}&ItemsPerPage=${itemsPerPage}&SearchCriteria=${searchCriteria}`
-      : `?PageNumber=${pageNumber}&ItemsPerPage=${itemsPerPage}`;
+    let urlQuery = `?PageNumber=${pageNumber}&ItemsPerPage=${itemsPerPage}`;
+
+    urlQuery = searchCriteria
+      ? urlQuery.concat(`&SearchCriteria=${searchCriteria}`)
+      : urlQuery;
+
+    urlQuery = orderBy ? urlQuery.concat(`&OrderBy=${orderBy}`) : urlQuery;
 
     return axios.get(url.concat(urlQuery));
   }

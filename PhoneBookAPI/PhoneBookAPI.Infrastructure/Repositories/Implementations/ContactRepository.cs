@@ -12,10 +12,12 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
     public class ContactRepository : BaseRepository<ContactDAO>, IContactRepository
     {
         private readonly IMapper _mapper;
+        private readonly IContactNumberRepository _contactNumberRepository;
 
-        public ContactRepository(IMapper mapper, IConfiguration configuration) : base(mapper, configuration)
+        public ContactRepository(IMapper mapper, IConfiguration configuration, IContactNumberRepository contactNumberRepository) : base(mapper, configuration)
         {
             _mapper = mapper;
+            _contactNumberRepository = contactNumberRepository;
         }
 
         public async Task<int?> InsertContact(Contact input)
@@ -93,7 +95,6 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
 
             SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
 
-            //$@"where (FullName like %{input.SearchCriteria}% or PreferedNumber like %{input.SearchCriteria}%)",
             string searchCriteriaSQL = input.SearchCriteria != null ?
                 $@"where FullName like '%{input.SearchCriteria}%'" :
                 string.Empty;
@@ -102,7 +103,16 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
 
             var contactsList = await connection.GetListPagedAsync<ContactDAO>(input.PageNumber - 1, input.ItemsPerPage,
                 searchCriteriaSQL,
-                string.Empty);
+                input.OrderBy);
+
+            foreach (var contact in contactsList)
+            {
+                var number = await _contactNumberRepository.GetPreferedContactNumber(contact.Id);
+                if (number != null) {
+                    contact.PhoneNumbers = new List<ContactNumberDAO>();
+                    contact.PhoneNumbers.Add(_mapper.Map<ContactNumberDAO>(number)); 
+                }
+            }
 
             var totalRecords = await connection.RecordCountAsync<ContactDAO>(searchCriteriaSQL);
             var totalPages = (int)Math.Ceiling((totalRecords / (decimal)input.ItemsPerPage));

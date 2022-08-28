@@ -1,11 +1,11 @@
-import placeholderImg from "../../../../assets/placeholder_user.png";
-import { MdEmail } from "react-icons/md";
-import { GrFormNext, GrFormDown } from "react-icons/gr";
-import { Link } from "react-router-dom";
+import { MdEmail, MdDeleteForever, MdOutlineEdit } from "react-icons/md";
+import { GrFormDown } from "react-icons/gr";
 
 import "./Contact.css";
 import { useState } from "react";
-import { ContactDetails } from "..";
+import { ContactExpanded } from "..";
+import { DeleteModal } from "../../../../components";
+import { useDeleteContact } from "../../hooks";
 
 interface ContactProps {
   contact: {
@@ -19,42 +19,79 @@ interface ContactProps {
       type: string;
     }[];
     photo: string;
+    fullName: string;
   };
 }
 
 export const Contact = ({ contact }: ContactProps): JSX.Element => {
   const [isDetailsOpen, setisDetailsOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const { deleteContact } = useDeleteContact();
 
   const toogleIsDetailsOpenClick = () => {
     setisDetailsOpen((prevState) => !prevState);
   };
 
+  const toggleDeleteModal = () => {
+    setShowModal(true);
+  };
+
+  const onCancelClickHandler = () => {
+    setShowModal(false);
+  };
+
+  const onDeleteClickHandler = () => {
+    console.log(contact.id);
+    deleteContact(contact.id);
+  };
+
   return (
-    <div className="accordion">
-      <div className="contact" key={`Contact_${contact.id}`}>
-        <div>
-          {/* <img src={props.contact.firstName ?? placeholderImg} alt={props.contact.lastName} /> */}
-          <img src={placeholderImg} alt={contact.lastName} />
-          <div className="details">
-            <strong>{`${contact.firstName} ${contact.lastName}`}</strong>
-            <span>{contact.email}</span>
+    <>
+      {showModal && (
+        <DeleteModal
+          type="contact"
+          name={`${contact?.firstName} ${contact?.lastName}`}
+          onDelete={onDeleteClickHandler}
+          onCancel={onCancelClickHandler}
+        ></DeleteModal>
+      )}
+      <div className="accordion">
+        <div className="accordion-header" key={`Contact_${contact.id}`}>
+          <div className="accordion-header-details">
+            {contact.photo ? (
+              <img src={contact.photo} alt={contact.lastName} />
+            ) : (
+              <div className="contact-initials">
+                {`${contact.firstName.substring(0,1)}${contact.lastName.substring(0, 1)}`}
+              </div>
+            )}
+            <div className="details">
+              <strong>{contact.fullName}</strong>
+              {contact.phoneNumbers.length > 0 && (
+                <span>{contact.phoneNumbers[0].number}</span>
+              )}
+            </div>
           </div>
+          <MdEmail size={20} className="email" title="Enviar Email" />
+          <MdDeleteForever
+            size={20}
+            className="delete"
+            onClick={toggleDeleteModal}
+            title="Apagar Contacto"
+          />
+          <MdOutlineEdit size={20} className="edit" title="Editar Contacto" />
+          <GrFormDown
+            size={25}
+            onClick={toogleIsDetailsOpenClick}
+            className={`contact-expand ${
+              isDetailsOpen && "contact-expand-rotated"
+            }`}
+            title="Mostrar Detalhes"
+          />
         </div>
-        <button className="email">
-          <MdEmail size={20} />
-        </button>
-
-        {isDetailsOpen ? (
-          <GrFormDown size={25} onClick={toogleIsDetailsOpenClick} />
-        ) : (
-          <GrFormNext size={25} onClick={toogleIsDetailsOpenClick} />
-        )}
+        {isDetailsOpen && <ContactExpanded id={contact.id} />}
       </div>
-      {isDetailsOpen && <ContactDetails id={contact.id} />}
-
-      {/* <Link to={`/contact/${contact.id}`} className="more">
-        <GrFormNext size={25} onClick={toogleIsDetailsOpenClick} />
-      </Link> */}
-    </div>
+    </>
   );
 };

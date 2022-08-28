@@ -9,5 +9,7 @@ namespace PhoneBookAPI.Application.DTOs
         public int ItemsPerPage { get; set; }
 
         public string? SearchCriteria { get; set; }
+
+        public string? OrderBy { get; set; }
     }
 }

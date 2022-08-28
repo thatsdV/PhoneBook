@@ -18,6 +18,8 @@ namespace PhoneBookAPI.Infrastructure.Repositories.DAO
 
         public string Address { get; set; }
 
+        public string FullName { get; set; }
+
         [NotMapped]
         public IList<ContactNumberDAO> PhoneNumbers { get; set; }
 

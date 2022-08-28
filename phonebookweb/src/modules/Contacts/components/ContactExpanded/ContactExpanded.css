@@ -1,0 +1,20 @@
+.accordion-item {
+    color: #fff;
+    display: flex;
+    justify-content: left;
+    margin: 0 0 20px 100px;
+}
+
+.accordion-item p {
+    line-height: 2;
+}
+
+.accordion-item-number {
+    display: flex;
+    align-items: center;
+    line-height: 2;
+}
+
+.accordion-item-number svg {
+    margin-right: 5px;
+}
