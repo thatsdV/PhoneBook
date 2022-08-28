@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button, Pagination, SearchBar } from "../../../../components";
 import {
-  AddContact,
+  AddEditContact,
   Contact,
   ContactEmptySearch,
   SelectOrder,
@@ -14,7 +14,8 @@ export const ContactListPage = () => {
   const {
     pagedContacts,
     onChangeSearchCriteria,
-    toggleAddingState,
+    isAddOrEditContact,
+    setIsAddOrEditContact,
     searchCriteria,
     handlePageClick,
     onSelectOrderHandler,
@@ -22,35 +23,47 @@ export const ContactListPage = () => {
   } = useGetContacts();
 
   return (
-    <section className="list">
-      <div>
-        <h1>Lista de Contactos</h1>
-      </div>
-      <SearchBar
-        tip="Escreva o nome do contacto..."
-        onChange={onChangeSearchCriteria}
-        cleanSearch={cleanSearchCriteria}
-      />
-      <SelectOrder onChange={onSelectOrderHandler} />
-      {pagedContacts?.contacts?.map((contact) => (
-        <div className="contact" key={`ContactItem_${contact.id}`}>
-          <Contact contact={contact} />
-        </div>
-      ))}
-      {pagedContacts?.contacts !== undefined &&
-      pagedContacts?.contacts.length <= 0 ? (
-        <ContactEmptySearch search={searchCriteria} />
-      ) : (
-        <>
-          <Pagination
-            onPageClick={handlePageClick}
-            pageCount={pagedContacts?.totalPages!}
-          />
-        </>
+    <>
+      {isAddOrEditContact && (
+        <AddEditContact
+          onCancelOrSubmit={() => setIsAddOrEditContact(false)}
+        ></AddEditContact>
       )}
-      <Link to="/">
-        <Button label="Voltar" />
-      </Link>
-    </section>
+      <div className="list">
+        <div>
+          <h1>Lista de Contactos</h1>
+        </div>
+        <SearchBar
+          tip="Escreva o nome do contacto..."
+          onChange={onChangeSearchCriteria}
+          cleanSearch={cleanSearchCriteria}
+        />
+        <div>
+          <SelectOrder onChange={onSelectOrderHandler} />
+          <button onClick={() => setIsAddOrEditContact(true)}>
+            Adicionar Contacto
+          </button>
+        </div>
+        {pagedContacts?.contacts?.map((contact) => (
+          <div className="contact" key={`ContactItem_${contact.id}`}>
+            <Contact contact={contact} />
+          </div>
+        ))}
+        {pagedContacts?.contacts !== undefined &&
+        pagedContacts?.contacts.length <= 0 ? (
+          <ContactEmptySearch search={searchCriteria} />
+        ) : (
+          <>
+            <Pagination
+              onPageClick={handlePageClick}
+              pageCount={pagedContacts?.totalPages!}
+            />
+          </>
+        )}
+        <Link to="/">
+          <Button label="Voltar" />
+        </Link>
+      </div>
+    </>
   );
 };

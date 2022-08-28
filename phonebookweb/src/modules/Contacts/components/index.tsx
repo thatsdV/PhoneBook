@@ -1,4 +1,4 @@
-export * from "./AddContact";
+export * from "./AddEditContact";
 export * from "./Contact";
 export * from "./ContactExpanded";
 export * from "./ContactEmptySearch";

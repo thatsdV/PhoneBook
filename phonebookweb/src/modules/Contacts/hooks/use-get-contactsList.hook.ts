@@ -28,7 +28,7 @@ export const useGetContacts = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pagedContacts, setPagedContacts] = useState<PagedContacts>();
   const [pageNumber, setPageNumber] = useState(1);
-  const [isAdding, setIsAdding] = useState(false);
+  const [isAddOrEditContact, setIsAddOrEditContact] = useState(false);
   const [searchCriteria, setSearchCriteria] = useState("");
   const [orderBy, setOrderBy] = useState("");
 
@@ -47,7 +47,7 @@ export const useGetContacts = () => {
     page ?? setPageNumber(+page!);
     search ?? setSearchCriteria(search!);
     order ?? setOrderBy(order!);
-  }, [isAdding, pageNumber, searchCriteria, orderBy]);
+  }, [isAddOrEditContact, pageNumber, searchCriteria, orderBy]);
 
   const getContacts = (
     pageNumber: number,
@@ -63,10 +63,6 @@ export const useGetContacts = () => {
     ).then((response) => {
       setPagedContacts(response.data);
     });
-  };
-
-  const toggleAddingState = () => {
-    setIsAdding((currentState) => !currentState);
   };
 
   const onChangeSearchCriteria = (event: ChangeEvent<HTMLInputElement>) => {
@@ -107,11 +103,12 @@ export const useGetContacts = () => {
   return {
     pagedContacts,
     getContacts,
-    onChangeSearchCriteria,
-    toggleAddingState,
     searchCriteria,
-    handlePageClick,
+    onChangeSearchCriteria,
     cleanSearchCriteria,
+    isAddOrEditContact,
+    setIsAddOrEditContact,
+    handlePageClick,
     onSelectOrderHandler,
   };
 };

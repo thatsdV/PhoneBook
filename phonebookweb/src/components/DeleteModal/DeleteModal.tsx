@@ -17,9 +17,9 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({
   return (
     <div className="modal">
       <div className="modal-backdrop" onClick={onCancel}></div>
-      <div className="modal-dialog modal-confirm">
+      <div className="modal-confirm">
         <div className="modal-content">
-          <div className="modal-header flex-column">
+          <div className="modal-header">
             <div className="icon-box">
               <MdDeleteForever size={50} className="icon-close" />
             </div>
@@ -32,11 +32,10 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({
           <div className="modal-body">
             <p>Este processo não pode ser revertido.</p>
           </div>
-          <div className="modal-footer justify-content-center">
+          <div className="modal-footer ">
             <button
               type="button"
               className="btn btn-secondary"
-              data-dismiss="modal"
               onClick={onCancel}
             >
               Cancelar

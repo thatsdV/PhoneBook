@@ -7,7 +7,6 @@ interface NewContact {
   email: string;
   phoneNumbers: PhoneNumbers[];
   photo: string;
-  fullName: string;
 }
 
 interface PhoneNumbers {
@@ -40,6 +39,7 @@ export class ContactService {
             )
           : [],
       photo: contact.photo,
+      fullName: [contact.firstName, contact.lastName].join(" "),
     });
   }
 
