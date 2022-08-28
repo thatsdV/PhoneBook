@@ -88,7 +88,14 @@ export const useGetContacts = () => {
 
   const handlePageClick = (event: { selected: number }) => {
     setPageNumber(event.selected + 1);
-    setSearchParams({ page: `${event.selected + 1}` });
+
+    if (event.selected === 0) {
+      searchParams.delete("page");
+    } else {
+      searchParams.set("page", `${event.selected + 1}`);
+    }
+
+    setSearchParams(searchParams);
   };
 
   const onSelectOrderHandler = (event: ChangeEvent<HTMLSelectElement>) => {
