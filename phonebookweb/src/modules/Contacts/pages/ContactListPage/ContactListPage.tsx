@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
+import { Button, Pagination, SearchBar } from "../../../../components";
 import {
-  Button,
-  Pagination,
-  SearchBar,
+  AddContact,
+  Contact,
+  ContactEmptySearch,
   SelectOrder,
-} from "../../../../components";
-import { AddContact, Contact, ContactEmptySearch } from "../../components";
+} from "../../components";
 import { useGetContacts } from "../../hooks";
 
 import "./ContactListPage.css";
