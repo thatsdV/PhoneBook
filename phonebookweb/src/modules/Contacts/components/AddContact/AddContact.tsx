@@ -3,13 +3,8 @@ import { useAddContact } from "../../hooks";
 import { FaUserEdit } from "react-icons/fa";
 import { TiUserAdd } from "react-icons/ti";
 
-import "./AddEditContact.css";
-import { useState } from "react";
-
-interface PhoneNumbers {
-  number: string;
-  type: string;
-}
+import "./AddContact.css";
+import { ChangeEvent, useState } from "react";
 
 interface ContactFormFields {
   firstName: string;
@@ -17,39 +12,41 @@ interface ContactFormFields {
   address: string;
   email: string;
   phoneNumbers: { number: string; type: string }[];
-  photo: string;
 }
 
-type AddEditContactProps = {
-  onCancelOrSubmit: () => void;
-  isEdit?: boolean;
-  contact?: string;
+type AddContactProps = {
+  onCancel: () => void;
+  reloadPageAfterAdd: () => void;
 };
 
-export const AddEditContact: React.FC<AddEditContactProps> = ({
-  onCancelOrSubmit,
-  isEdit = false,
-  contact = undefined,
+export const AddContact: React.FC<AddContactProps> = ({
+  onCancel,
+  reloadPageAfterAdd,
 }) => {
   const { addContact } = useAddContact();
 
   const { register, handleSubmit } = useForm<ContactFormFields>();
   const [enteredNumbers, setEnteredNumbers] = useState([1]);
+  const [photo, setPhoto] = useState<File>();
 
-  const onAddContactNumberHandler = () => {
+  const onAddClickHandler = () => {
     setEnteredNumbers((prevState: number[]) => {
       return [...prevState, enteredNumbers.length + 1];
     });
   };
 
+  const onPhotoChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setPhoto(event.target.files![0]);
+  };
+
   const onSubmitHandler = (data: ContactFormFields) => {
-    //addContact(data);
-    onCancelOrSubmit();
+    addContact(data, photo);
+    reloadPageAfterAdd();
   };
 
   return (
     <div className="modal">
-      <div className="modal-backdrop" onClick={onCancelOrSubmit}></div>
+      <div className="modal-backdrop" onClick={onCancel}></div>
       <div className="modal-form">
         <form onSubmit={handleSubmit(onSubmitHandler)}>
           <div className="modal-form__inputs">
@@ -59,53 +56,52 @@ export const AddEditContact: React.FC<AddEditContactProps> = ({
             </div>
             <div className="modal-form__inputs-data">
               <div>
-                <input type="file" {...register("photo")}></input>
+                <input type="file" name="photo" onChange={onPhotoChange} />
               </div>
-              <input
-                placeholder="Primeiro Nome"
-                {...register("firstName")}
-              ></input>
-              <input
-                placeholder="Último Nome"
-                {...register("lastName")}
-              ></input>
-              <input placeholder="Email" {...register("firstName")}></input>
-              <input placeholder="Morada" {...register("email")}></input>
+              <div className="modal-form__inputs-data-field">
+                <input
+                  placeholder="Nome Próprio"
+                  {...register("firstName")}
+                ></input>
+                <input placeholder="Apelido" {...register("lastName")} />
+                <input placeholder="Email" {...register("email")} />
+                <input placeholder="Morada" {...register("address")} />
+              </div>
               <div>
-                <p>Contactos:</p>
-                {enteredNumbers.map((_, i) => (
-                  <>
+                <p>Número de telefone:</p>
+                {enteredNumbers.map((i) => (
+                  <div key={`PhoneNumber_${i}`}>
                     <input
                       key={`PhoneNumber_${i}_number`}
                       {...register(`phoneNumbers.${i}.number`)}
-                    ></input>
+                    />
                     <select
                       key={`PhoneNumber_${i}_type`}
                       {...register(`phoneNumbers.${i}.type`)}
                     >
-                      <option key="tlm" value="telemóvel">
+                      <option key="option-telemóvel" value="telemóvel">
                         Telemóvel
                       </option>
-                      <option key="trb" value="telemóvel">
+                      <option key="option-trabalho" value="trabalho">
                         Trabalho
                       </option>
-                      <option key="casa" value="telemóvel">
+                      <option key="option-casa" value="casa">
                         Casa
                       </option>
-                      <option key="otr" value="telemóvel">
+                      <option key="option-outro" value="outro">
                         Outro
                       </option>
                     </select>
-                  </>
+                  </div>
                 ))}
-                <button onClick={onAddContactNumberHandler}>
+                <button type="button" onClick={onAddClickHandler}>
                   Adicionar Contacto
                 </button>
               </div>
             </div>
           </div>
           <div className="modal-form__buttons">
-            <button onClick={onCancelOrSubmit} className="btn btn-cancel">
+            <button onClick={onCancel} className="btn btn-cancel">
               Cancelar
             </button>
             <button type="submit" className="btn btn-confirm">

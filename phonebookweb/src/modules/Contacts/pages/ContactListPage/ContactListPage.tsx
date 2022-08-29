@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Pagination, SearchBar } from "../../../../components";
+import { Pagination, SearchBar } from "../../../../components";
 import {
-  AddEditContact,
+  AddContact,
+  EditContact,
   Contact,
   ContactEmptySearch,
   SelectOrder,
@@ -10,24 +12,66 @@ import { useGetContacts } from "../../hooks";
 
 import "./ContactListPage.css";
 
+type Contact  = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  address: string;
+  email: string;
+  phoneNumbers: {
+    number: string;
+    type: string;
+  }[];
+  photo: { name: string; url: string };
+  fullName: string;
+};
+
 export const ContactListPage = () => {
+  const [isAddContact, setIsAddContact] = useState(false);
+  const [isEditContact, setIsEditContact] = useState(false);
+  const [contactToEdit, setContactToEdit] = useState<Contact>();
+
   const {
     pagedContacts,
     onChangeSearchCriteria,
-    isAddOrEditContact,
-    setIsAddOrEditContact,
     searchCriteria,
     handlePageClick,
     onSelectOrderHandler,
     cleanSearchCriteria,
+    onDeleteAddOrEditHandler,
   } = useGetContacts();
+
+  const onAddSubmitHandler = () => {
+    setIsAddContact(false);
+    onDeleteAddOrEditHandler();
+  };
+
+  const onEditSubmitHandler = () => {
+    setIsEditContact(false);
+    onDeleteAddOrEditHandler();
+  };
+
+  const onEditContactClickHandler = (contact: Contact) => {
+    setIsEditContact(true);
+    setContactToEdit(contact);
+  };
 
   return (
     <>
-      {isAddOrEditContact && (
-        <AddEditContact
-          onCancelOrSubmit={() => setIsAddOrEditContact(false)}
-        ></AddEditContact>
+      {isAddContact && (
+        <AddContact
+          onCancel={() => {
+            setIsAddContact(false);
+          }}
+          reloadPageAfterAdd={onAddSubmitHandler}
+        ></AddContact>
+      )}
+      {isEditContact && (
+        <EditContact
+          onCancel={() => setIsEditContact(false)}
+          reloadPageAfterEdit={onEditSubmitHandler}
+          contact={contactToEdit!}
+        ></EditContact>
       )}
       <div className="list">
         <div>
@@ -40,13 +84,17 @@ export const ContactListPage = () => {
         />
         <div>
           <SelectOrder onChange={onSelectOrderHandler} />
-          <button onClick={() => setIsAddOrEditContact(true)}>
+          <button onClick={() => setIsAddContact(true)}>
             Adicionar Contacto
           </button>
         </div>
         {pagedContacts?.contacts?.map((contact) => (
           <div className="contact" key={`ContactItem_${contact.id}`}>
-            <Contact contact={contact} />
+            <Contact
+              contact={contact}
+              reloadPageAfterDelete={onDeleteAddOrEditHandler}
+              editClick={onEditContactClickHandler}
+            />
           </div>
         ))}
         {pagedContacts?.contacts !== undefined &&
@@ -61,7 +109,7 @@ export const ContactListPage = () => {
           </>
         )}
         <Link to="/">
-          <Button label="Voltar" />
+          <button>Voltar</button>
         </Link>
       </div>
     </>

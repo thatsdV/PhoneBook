@@ -38,7 +38,7 @@ namespace PhoneBookAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateContact([FromBody] CreateContactRequest request)
+        public async Task<IActionResult> CreateContact([FromForm] CreateContactRequest request)
         {
             var createdUser = await _mediator.Send(request);
             return CreatedAtAction(nameof(GetContactById), createdUser, request);

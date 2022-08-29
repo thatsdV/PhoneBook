@@ -11,7 +11,9 @@ namespace PhoneBookAPI.Infrastructure.Mappers
         {
             CreateMap<ContactDAO, Contact>();
 
-            CreateMap<ContactNumber, ContactNumberDAO>();
+            CreateMap<ContactNumberDAO, ContactNumber>();
+
+            CreateMap<ContactPhotoDAO, ContactPhoto>();
         }
     }
 }

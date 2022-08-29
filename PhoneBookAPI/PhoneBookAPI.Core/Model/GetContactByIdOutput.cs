@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using PhoneBookAPI.Core.Entities;
 
-namespace PhoneBookAPI.Core.Entities
+namespace PhoneBookAPI.Core.Model
 {
-    public class Contact
+    public class GetContactByIdOutput
     {
-        public int Id { get; set; }
-
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
-
-        public string FullName { get; set; }
 
         public string Email { get; set; }
 

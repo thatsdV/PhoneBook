@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace PhoneBookAPI.Application.DTOs
 {
@@ -14,8 +15,8 @@ namespace PhoneBookAPI.Application.DTOs
 
         public string? Email { get; set; }
 
-        public IList<PhoneNumber>? PhoneNumbers { get; set; }
+        public PhoneNumber[]? PhoneNumbers { get; set; }
 
-        public string? Photo { get; set; }
+        public IFormFile? Photo { get; set; }
     }
 }

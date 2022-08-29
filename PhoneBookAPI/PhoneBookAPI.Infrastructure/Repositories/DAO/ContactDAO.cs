@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PhoneBookAPI.Infrastructure.Repositories.DAO
@@ -22,6 +23,9 @@ namespace PhoneBookAPI.Infrastructure.Repositories.DAO
 
         [NotMapped]
         public IList<ContactNumberDAO> PhoneNumbers { get; set; }
+
+        [NotMapped]
+        public ContactPhotoDAO Photo { get; set; }
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 

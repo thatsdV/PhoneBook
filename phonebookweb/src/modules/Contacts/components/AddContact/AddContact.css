@@ -51,6 +51,28 @@
     gap: 10px;
 }
 
+.modal-form__inputs-data-field {
+    position: relative;
+    margin-bottom: 1.25rem;
+}
+
+.modal-form__inputs-data-field input {
+    font-size: 1.125rem;
+    margin: 10px 0 0 0;
+    padding: 0.625rem 0.625rem 0.625rem 0.3125rem;
+    display: block;
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    border-bottom: 0.0625rem solid #757575;
+    box-sizing: border-box;
+}
+
+.modal-form__inputs-data-field input:focus {
+    outline: none;
+    border-bottom: 0.0625rem solid #242121;
+}
+
 .modal-form__buttons {
     border: none;
     text-align: center;

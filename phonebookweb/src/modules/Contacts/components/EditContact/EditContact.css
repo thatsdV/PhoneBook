@@ -1,0 +1,115 @@
+.modal {
+    top: 50%;
+    left: 50%;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 4.8125rem;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: rgba(124, 124, 124, 0.75);
+}
+
+.modal-form {
+    background-color: white;
+    border-radius: 4rem;
+    color: #636363;
+    width: 400px;
+    position: absolute;
+    float: left;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+}
+
+.modal-form__inputs {
+    padding: 20px;
+    border: none;
+    text-align: center;
+    font-size: 14px;
+}
+
+.modal-form__inputs-title {
+    display: flex;
+    align-items: center;
+    border-bottom: none;
+    position: relative;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px;
+    font-size: 18px;
+}
+
+.modal-form__inputs-data {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-form__inputs-data-field {
+    position: relative;
+    margin-bottom: 1.25rem;
+}
+
+.modal-form__inputs-data-field input {
+    font-size: 1.125rem;
+    margin: 10px 0 0 0;
+    padding: 0.625rem 0.625rem 0.625rem 0.3125rem;
+    display: block;
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    border-bottom: 0.0625rem solid #757575;
+    box-sizing: border-box;
+}
+
+.modal-form__inputs-data-field input:focus {
+    outline: none;
+    border-bottom: 0.0625rem solid #242121;
+}
+
+.modal-form__buttons {
+    border: none;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 13px;
+    padding: 10px 15px 25px;
+}
+
+.btn,
+.btn:active {
+    color: #fff;
+    border-radius: 4px;
+    background: #60c7c1;
+    text-decoration: none;
+    transition: all 0.4s;
+    line-height: normal;
+    min-width: 120px;
+    border: none;
+    min-height: 40px;
+    border-radius: 3px;
+    margin: 0 5px;
+}
+
+.btn-cancel {
+    background: #c1c1c1;
+}
+
+.btn-cancel:hover,
+.btn-cancel:focus {
+    background: #a8a8a8;
+}
+
+.btn-confirm {
+    background: #07a020;
+}
+
+.btn-confirm:hover,
+.btn-confirm:focus {
+    background: #056d10;
+}

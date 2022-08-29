@@ -11,8 +11,6 @@ namespace PhoneBookAPI.Application.Mappers
         {
             CreateMap<CreateContactRequest, CreateContactInput>();
 
-            CreateMap<CreateContactInput, Contact>();
-
             CreateMap<PhoneNumber, ContactNumber>();
         }
     }

@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PhoneBookAPI.Application\PhoneBookAPI.Application.csproj" />
     <ProjectReference Include="..\PhoneBookAPI.Infrastructure\PhoneBookAPI.Infrastructure.csproj" />
+    <ProjectReference Include="..\PhoneBookAPI.Utils\PhoneBookAPI.Utils.csproj" />
   </ItemGroup>
 
 </Project>

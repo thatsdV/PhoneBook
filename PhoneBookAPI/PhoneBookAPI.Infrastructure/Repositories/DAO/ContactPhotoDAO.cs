@@ -3,16 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PhoneBookAPI.Infrastructure.Repositories.DAO
 {
-    [Table("ContactNumber")]
-    public class ContactNumberDAO
+    [Table("ContactPhoto")]
+    public class ContactPhotoDAO
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public string Number { get; set; }
+        public string Name { get; set; }
 
-        public string Type { get; set; }
+        public string Url { get; set; }
 
         public int ContactId { get; set; }
 

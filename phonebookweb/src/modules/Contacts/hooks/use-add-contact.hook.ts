@@ -6,7 +6,6 @@ interface Contact {
   address: string;
   email: string;
   phoneNumbers: PhoneNumbers[];
-  photo: string;
 }
 
 interface PhoneNumbers {
@@ -15,8 +14,8 @@ interface PhoneNumbers {
 }
 
 export const useAddContact = () => {
-  const addContact = (contact: Contact) => {
-    ContactService.CreateNewContact(contact);
+  const addContact = (contact: Contact, photo?: File) => {
+    ContactService.CreateNewContact(contact, photo);
   };
 
   return { addContact };

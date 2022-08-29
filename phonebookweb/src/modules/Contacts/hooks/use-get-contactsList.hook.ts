@@ -14,7 +14,7 @@ interface ContactEntity {
   address: string;
   email: string;
   phoneNumbers: PhoneNumbers[];
-  photo: string;
+  photo: { name: string; url: string };
   fullName: string;
 }
 
@@ -28,9 +28,9 @@ export const useGetContacts = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pagedContacts, setPagedContacts] = useState<PagedContacts>();
   const [pageNumber, setPageNumber] = useState(1);
-  const [isAddOrEditContact, setIsAddOrEditContact] = useState(false);
   const [searchCriteria, setSearchCriteria] = useState("");
   const [orderBy, setOrderBy] = useState("");
+  const [reloadPage, setReloadPage] = useState(false);
 
   const page = searchParams.get("page");
   const search = searchParams.get("search");
@@ -47,7 +47,7 @@ export const useGetContacts = () => {
     page ?? setPageNumber(+page!);
     search ?? setSearchCriteria(search!);
     order ?? setOrderBy(order!);
-  }, [isAddOrEditContact, pageNumber, searchCriteria, orderBy]);
+  }, [reloadPage, pageNumber, searchCriteria, orderBy]);
 
   const getContacts = (
     pageNumber: number,
@@ -100,15 +100,18 @@ export const useGetContacts = () => {
     setSearchParams(searchParams);
   };
 
+  const onDeleteAddOrEditHandler = () => {
+    setReloadPage((prevState) => !prevState);
+  }
+
   return {
     pagedContacts,
     getContacts,
     searchCriteria,
     onChangeSearchCriteria,
     cleanSearchCriteria,
-    isAddOrEditContact,
-    setIsAddOrEditContact,
     handlePageClick,
     onSelectOrderHandler,
+    onDeleteAddOrEditHandler
   };
 };

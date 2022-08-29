@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PhoneBookAPI.Core.Entities;
+using PhoneBookAPI.Core.Model;
 using PhoneBookAPI.Infrastructure.Repositories.DAO;
 
 namespace PhoneBookAPI.Infrastructure.Mappers
@@ -8,9 +9,11 @@ namespace PhoneBookAPI.Infrastructure.Mappers
     {
         public GetContactByIdProfile()
         {
-            CreateMap<ContactDAO, Contact>();
+            CreateMap<ContactDAO, GetContactByIdOutput>();
 
-            CreateMap<ContactNumberDAO, ContactNumber>();
+            CreateMap<ContactNumber, ContactNumberDAO>();
+
+            CreateMap<ContactPhoto, ContactPhotoDAO>();
         }
     }
 }

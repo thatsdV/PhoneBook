@@ -14,7 +14,9 @@ namespace PhoneBookAPI.Infrastructure.Migrations
         {
             Create.Table("ContactPhoto")
                 .WithColumn("Id").AsInt64().PrimaryKey().Unique()
-                .WithColumn("Name").AsString()
+                .WithColumn("Name").AsString().NotNullable()
+                .WithColumn("Url").AsString().NotNullable()
+                .WithColumn("ContactId").AsInt64().ForeignKey("Contact", "Id").NotNullable()
                 .WithColumn("CreatedDate").AsDateTime().WithDefaultValue(DateTime.UtcNow)
                 .WithColumn("UpdatedDate").AsString().WithDefaultValue(DateTime.UtcNow);
         }

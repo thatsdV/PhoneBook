@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Dapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using PhoneBookAPI.Core.Contracts;
 using PhoneBookAPI.Core.Entities;
 using PhoneBookAPI.Core.Model;
 using PhoneBookAPI.Infrastructure.Repositories.DAO;
+using PhoneBookAPI.Utils.Files;
 using System.Transactions;
 
 namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
@@ -12,15 +14,18 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
     public class ContactRepository : BaseRepository<ContactDAO>, IContactRepository
     {
         private readonly IMapper _mapper;
+        private readonly IFileManager _fileManager;
         private readonly IContactNumberRepository _contactNumberRepository;
 
-        public ContactRepository(IMapper mapper, IConfiguration configuration, IContactNumberRepository contactNumberRepository) : base(mapper, configuration)
+        public ContactRepository(IMapper mapper, IConfiguration configuration, 
+            IContactNumberRepository contactNumberRepository, IFileManager fileManager) : base(mapper, configuration)
         {
             _mapper = mapper;
             _contactNumberRepository = contactNumberRepository;
+            _fileManager = fileManager;
         }
 
-        public async Task<int?> InsertContact(Contact input)
+        public async Task<int?> InsertContact(CreateContactInput input)
         {
             using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
@@ -28,11 +33,18 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
             {
                 var contact = _mapper.Map<ContactDAO>(input);
 
-                var inserted = (int?)await InsertAsync<ContactDAO>(contact);
+                var contactId = (int?)await InsertAsync<ContactDAO>(contact);
 
-                transaction.Complete();
+                if (contactId != null 
+                    && await InsertContactPhoto(input.Photo, contactId.Value) 
+                    && await InsertContactNumbers(input.PhoneNumbers, contactId.Value))
+                {
+                    transaction.Complete();
+                    return contactId;
+                }
 
-                return inserted;
+                transaction.Dispose();
+                return default;
             }
             catch (Exception ex)
             {
@@ -41,11 +53,12 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
             }
         }
 
-        public async Task<Contact> GetContactById(int id)
+        public async Task<GetContactByIdOutput> GetContactById(int id)
         {
             string sql = $@"SELECT *
                             FROM Contact c 
                             LEFT JOIN ContactNumber cn on cn.ContactId = c.Id
+                            LEFT JOIN ContactPhoto cp on cp.ContactId = c.Id
                             WHERE c.Id = {id}";
 
             using var conn = Connection;
@@ -53,7 +66,7 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
 
             conn.Open();
 
-            var contactDao = await conn.QueryAsync<ContactDAO, ContactNumberDAO, ContactDAO>(sql, (contact, number) =>
+            var contactDao = await conn.QueryAsync<ContactDAO, ContactNumberDAO, ContactPhotoDAO, ContactDAO>(sql, (contact, number, photo) =>
             {
                 if (contact.PhoneNumbers == null)
                     contact.PhoneNumbers = new List<ContactNumberDAO>();
@@ -61,6 +74,11 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
                 if (number != null)
                 {
                     contact.PhoneNumbers.Add(number);
+                }
+
+                if (photo != null)
+                {
+                    contact.Photo = photo;
                 }
 
                 return contact;
@@ -84,7 +102,7 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
 
             conn.Close();
 
-            return _mapper.Map<Contact>(result.FirstOrDefault());
+            return _mapper.Map<GetContactByIdOutput>(result.FirstOrDefault());
         }
 
         public async Task<GetContactsOutput> GetContacts(GetContactsInput input)
@@ -101,16 +119,24 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
 
             connection.Open();
 
-            var contactsList = await connection.GetListPagedAsync<ContactDAO>(input.PageNumber - 1, input.ItemsPerPage,
+            var contactsList = await connection.GetListPagedAsync<ContactDAO>(input.PageNumber, input.ItemsPerPage,
                 searchCriteriaSQL,
                 input.OrderBy);
 
             foreach (var contact in contactsList)
             {
                 var number = await _contactNumberRepository.GetPreferedContactNumber(contact.Id);
-                if (number != null) {
+                if (number != null)
+                {
                     contact.PhoneNumbers = new List<ContactNumberDAO>();
-                    contact.PhoneNumbers.Add(_mapper.Map<ContactNumberDAO>(number)); 
+                    contact.PhoneNumbers.Add(_mapper.Map<ContactNumberDAO>(number));
+                }
+
+                var photo = await connection.QueryAsync<ContactPhotoDAO>($"Select * from ContactPhoto where ContactId = {contact.Id}");
+
+                if (photo != null && photo.Any())
+                {
+                    contact.Photo = photo.FirstOrDefault();
                 }
             }
 
@@ -154,12 +180,150 @@ namespace PhoneBookAPI.Infrastructure.Repositories.Implementations
         {
             try
             {
-                return await DeleteAsync(id);
+                if(await DeleteIfContactHasPhoto(id) &&
+                await DeleteIfContactHasNumbers(id) 
+                //&& await RemoveIfContactIsInGroup(id)
+                )
+                {
+                    return await DeleteAsync(id);
+                }
+
+                return false;
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
+        private async Task<bool> InsertContactPhoto(IFormFile photo, int contactId)
+        {
+            if (photo != null)
+            {                
+                var photoUrl = await _fileManager.UploadFile(photo);
+
+                ContactPhotoDAO photoDAO = new ContactPhotoDAO 
+                { 
+                    Name = photo.FileName, 
+                    ContactId = contactId, 
+                    Url = photoUrl 
+                };
+
+                var insertedId = (int?)await InsertAsync<ContactPhotoDAO>(photoDAO);
+
+                if (!insertedId.HasValue)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private async Task<bool> InsertContactNumbers(ContactNumber[] numbers, int contactId)
+        {
+            if (numbers != null && numbers.Length > 0)
+            {
+                foreach (var number in numbers)
+                {
+                    var numberDao = _mapper.Map<ContactNumberDAO>(number);
+
+                    numberDao.ContactId = contactId;
+
+                    var insertedId = (int?)await InsertAsync<ContactNumberDAO>(numberDao);
+
+                    if (!insertedId.HasValue)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private async Task<bool> DeleteIfContactHasPhoto(int contactId)
+        {
+            try
+            {
+                using var connection = Connection;
+
+                SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
+
+                connection.Open();
+
+                var photo = await connection.RecordCountAsync<ContactPhotoDAO>($"where ContactId = {contactId}");
+
+                if (photo >= 1)
+                {
+                    var result = await connection.DeleteListAsync<ContactPhotoDAO>($"where ContactId = {contactId}");
+                    return result >= 1;
+                }
+                connection.Close();
+
+                return true;                
+
+            } 
+            catch (Exception ex)
+            {
+                throw ex;
+            }            
+        }
+
+        private async Task<bool> DeleteIfContactHasNumbers(int contactId)
+        {
+            try
+            {
+                using var connection = Connection;
+
+                SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
+
+                connection.Open();
+                var numbers = await connection.RecordCountAsync<ContactNumberDAO>($"where ContactId = {contactId}");
+
+                if (numbers >= 1)
+                {
+                    var result = await connection.DeleteListAsync<ContactNumberDAO>($"where ContactId = {contactId}");
+                    return result >= 1;
+                }
+
+                connection.Close();
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        //private async Task<bool> RemoveIfContactIsInGroup(int contactId)
+        //{
+        //    try
+        //    {
+        //        using var connection = Connection;
+
+        //        SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
+
+        //        connection.Open();
+                                
+        //        var contact = await connection.GetAsync<ContactDAO>(contactId);
+
+        //        if (contact.GroupId != null)
+        //        {
+        //            var result = await connection.DeleteListAsync<ContactGroupDAO>($"where ContactId = {contactId}");
+        //            return result >= 1;
+        //        }
+        //        connection.Close();
+
+        //        return true;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
     }
 }

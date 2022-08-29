@@ -2,28 +2,36 @@ import { MdEmail, MdDeleteForever, MdOutlineEdit } from "react-icons/md";
 import { GrFormDown } from "react-icons/gr";
 
 import "./Contact.css";
-import { useState } from "react";
+import { EventHandler, useState } from "react";
 import { ContactExpanded } from "..";
 import { DeleteModal } from "../../../../components";
 import { useDeleteContact } from "../../hooks";
 
+type Contact = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  address: string;
+  email: string;
+  phoneNumbers: {
+    number: string;
+    type: string;
+  }[];
+  photo: { name: string; url: string };
+  fullName: string;
+};
+
 interface ContactProps {
-  contact: {
-    id: number;
-    firstName: string;
-    lastName: string;
-    address: string;
-    email: string;
-    phoneNumbers: {
-      number: string;
-      type: string;
-    }[];
-    photo: string;
-    fullName: string;
-  };
+  contact: Contact;
+  reloadPageAfterDelete: () => void;
+  editClick: (contact: Contact) => void;
 }
 
-export const Contact = ({ contact }: ContactProps): JSX.Element => {
+export const Contact = ({
+  contact,
+  reloadPageAfterDelete,
+  editClick,
+}: ContactProps): JSX.Element => {
   const [isDetailsOpen, setisDetailsOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -42,9 +50,19 @@ export const Contact = ({ contact }: ContactProps): JSX.Element => {
   };
 
   const onDeleteClickHandler = () => {
-    console.log(contact.id);
     deleteContact(contact.id);
+    setShowModal(false);
+    reloadPageAfterDelete();
   };
+
+  const onEmailClickHandler = (e: { preventDefault: () => void }) => {
+    window.open(`mailto:${contact.email}`);
+    e.preventDefault();
+  };
+
+  const onEditClickHandler = () => {
+    editClick(contact);
+  }
 
   return (
     <>
@@ -60,10 +78,13 @@ export const Contact = ({ contact }: ContactProps): JSX.Element => {
         <div className="accordion-header" key={`Contact_${contact.id}`}>
           <div className="accordion-header-details">
             {contact.photo ? (
-              <img src={contact.photo} alt={contact.lastName} />
+              <img src={contact.photo.url} alt={contact.lastName} />
             ) : (
               <div className="contact-initials">
-                {`${contact.firstName.substring(0,1)}${contact.lastName.substring(0, 1)}`}
+                {`${contact.firstName.substring(
+                  0,
+                  1
+                )}${contact.lastName.substring(0, 1)}`}
               </div>
             )}
             <div className="details">
@@ -73,14 +94,24 @@ export const Contact = ({ contact }: ContactProps): JSX.Element => {
               )}
             </div>
           </div>
-          <MdEmail size={20} className="email" title="Enviar Email" />
+          <MdEmail
+            size={20}
+            className="email"
+            title="Enviar Email"
+            onClick={onEmailClickHandler}
+          />
           <MdDeleteForever
             size={20}
             className="delete"
             onClick={toggleDeleteModal}
             title="Apagar Contacto"
           />
-          <MdOutlineEdit size={20} className="edit" title="Editar Contacto" />
+          <MdOutlineEdit
+            size={20}
+            className="edit"
+            title="Editar Contacto"
+            onClick={onEditClickHandler}
+          />
           <GrFormDown
             size={25}
             onClick={toogleIsDetailsOpenClick}

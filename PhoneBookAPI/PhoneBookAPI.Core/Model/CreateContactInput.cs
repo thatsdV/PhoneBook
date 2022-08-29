@@ -1,4 +1,5 @@
-﻿using PhoneBookAPI.Core.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using PhoneBookAPI.Core.Entities;
 
 namespace PhoneBookAPI.Core.Model
 {
@@ -8,12 +9,14 @@ namespace PhoneBookAPI.Core.Model
 
         public string? LastName { get; set; }
 
+        public string? FullName { get; set; }
+
         public string? Address { get; set; }
 
         public string? Email { get; set; }
 
-        public IList<ContactNumber>? PhoneNumbers { get; set; }
+        public ContactNumber[]? PhoneNumbers { get; set; }
 
-        public string? Photo { get; set; }
+        public IFormFile? Photo { get; set; }
     }
 }
