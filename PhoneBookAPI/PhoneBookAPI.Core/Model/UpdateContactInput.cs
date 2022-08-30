@@ -1,13 +1,10 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Text.Json.Serialization;
+﻿using Microsoft.AspNetCore.Http;
+using PhoneBookAPI.Core.Entities;
 
-namespace PhoneBookAPI.Application.DTOs
+namespace PhoneBookAPI.Core.Model
 {
-    public class UpdateContactRequest : IRequest<bool>
+    public class UpdateContactInput
     {
-        [JsonIgnore]
         public int Id { get; set; }
 
         public string? FirstName { get; set; }
@@ -20,7 +17,7 @@ namespace PhoneBookAPI.Application.DTOs
 
         public string? Email { get; set; }
 
-        public PhoneNumber[]? PhoneNumbers { get; set; }
+        public ContactNumber[]? PhoneNumbers { get; set; }
 
         public IFormFile? Photo { get; set; }
     }

@@ -1,27 +1,36 @@
-.pagination .selected a {
-    box-shadow: 0 0 2px #1b7d9e;
-    background-color: #f3fcff;
+.pagination ul {
+    display: inline-block;
+    list-style: none;
 }
 
-.pagination .disabled>a {
-    color: #ccc;
-    background-color: #f8f8f8;
-    border-color: #eee;
-    cursor: default;
+.pagination li {
+    height: 50px;
+    width: 50px;
+    color: white;
+    float: left;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.pagination .disabled>a:hover {
-    background-color: #f8f8f8;
+.pagination li.selected {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 100%;
 }
 
-.pagination .break {
-    margin: 0 8px;
+.pagination li:hover:not(.active) {
+    background-color: #ddd;
+    border-radius: 100%;
 }
 
-.pagination .previous {
-    margin-right: 1rem;
-}
-
-.pagination .next {
-    margin-left: 1rem;
+.pagination a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    cursor: pointer;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
 }

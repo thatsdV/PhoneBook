@@ -9,20 +9,22 @@ import {
   SelectOrder,
 } from "../../components";
 import { useGetContacts } from "../../hooks";
+import { CgAdd } from "react-icons/cg";
 
 import "./ContactListPage.css";
 
-type Contact  = {
+type Contact = {
   id: number;
   firstName: string;
   lastName: string;
   address: string;
   email: string;
   phoneNumbers: {
+    id: number;
     number: string;
     type: string;
   }[];
-  photo: { name: string; url: string };
+  photo: { id: number; name: string; url: string };
   fullName: string;
 };
 
@@ -39,6 +41,7 @@ export const ContactListPage = () => {
     onSelectOrderHandler,
     cleanSearchCriteria,
     onDeleteAddOrEditHandler,
+    pageNumber,
   } = useGetContacts();
 
   const onAddSubmitHandler = () => {
@@ -77,16 +80,17 @@ export const ContactListPage = () => {
         <div>
           <h1>Lista de Contactos</h1>
         </div>
-        <SearchBar
-          tip="Escreva o nome do contacto..."
-          onChange={onChangeSearchCriteria}
-          cleanSearch={cleanSearchCriteria}
-        />
-        <div>
+        <div className="btnAdd" onClick={() => setIsAddContact(true)}>
+          <CgAdd size={50} />
+          <label>Adicionar Contacto</label>
+        </div>
+        <div className="list-options">
+          <SearchBar
+            tip="Escreva o nome do contacto..."
+            onChange={onChangeSearchCriteria}
+            cleanSearch={cleanSearchCriteria}
+          />
           <SelectOrder onChange={onSelectOrderHandler} />
-          <button onClick={() => setIsAddContact(true)}>
-            Adicionar Contacto
-          </button>
         </div>
         {pagedContacts?.contacts?.map((contact) => (
           <div className="contact" key={`ContactItem_${contact.id}`}>
@@ -105,11 +109,12 @@ export const ContactListPage = () => {
             <Pagination
               onPageClick={handlePageClick}
               pageCount={pagedContacts?.totalPages!}
+              page={pageNumber}
             />
           </>
         )}
         <Link to="/">
-          <button>Voltar</button>
+          <button className="btn-back">Voltar</button>
         </Link>
       </div>
     </>

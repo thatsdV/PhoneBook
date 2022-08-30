@@ -14,10 +14,11 @@ type Contact = {
   address: string;
   email: string;
   phoneNumbers: {
+    id: number;
     number: string;
     type: string;
   }[];
-  photo: { name: string; url: string };
+  photo: { id: number; name: string; url: string };
   fullName: string;
 };
 
@@ -62,7 +63,7 @@ export const Contact = ({
 
   const onEditClickHandler = () => {
     editClick(contact);
-  }
+  };
 
   return (
     <>

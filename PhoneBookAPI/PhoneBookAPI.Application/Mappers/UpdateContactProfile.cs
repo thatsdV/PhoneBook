@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using PhoneBookAPI.Application.DTOs;
+using PhoneBookAPI.Core.Model;
 
 namespace PhoneBookAPI.Application.Mappers
 {
@@ -6,6 +8,7 @@ namespace PhoneBookAPI.Application.Mappers
     {
         public UpdateContactProfile()
         {
+            CreateMap<UpdateContactRequest, UpdateContactInput>();
         }
     }
 }

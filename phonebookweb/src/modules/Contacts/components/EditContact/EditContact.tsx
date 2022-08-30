@@ -1,9 +1,17 @@
 import { useForm } from "react-hook-form";
-import { useAddContact } from "../../hooks";
 import { FaUserEdit } from "react-icons/fa";
+import { MdRemoveCircle } from "react-icons/md";
+import { ChangeEvent, useState } from "react";
+import { useUpdateContact } from "../../hooks/use-update-contact.hook";
+import { SelectPhoneType } from "../SelectPhoneType";
 
 import "./EditContact.css";
-import { ChangeEvent, useState } from "react";
+
+type PhoneNumbers = {
+  id: number;
+  number: string;
+  type: string;
+};
 
 type Contact = {
   id: number;
@@ -11,11 +19,8 @@ type Contact = {
   lastName: string;
   address: string;
   email: string;
-  phoneNumbers: {
-    number: string;
-    type: string;
-  }[];
-  photo: { name: string; url: string };
+  phoneNumbers: PhoneNumbers[];
+  photo: { id: number; name: string; url: string };
   fullName: string;
 };
 
@@ -24,7 +29,7 @@ interface ContactFormFields {
   lastName: string;
   address: string;
   email: string;
-  phoneNumbers: { number: string; type: string }[];
+  phoneNumbers: { id: number; number: string; type: string }[];
 }
 
 type EditContactProps = {
@@ -38,16 +43,32 @@ export const EditContact: React.FC<EditContactProps> = ({
   reloadPageAfterEdit,
   contact,
 }) => {
-  const { addContact } = useAddContact();
+  const { updateContact, photo, setPhoto } = useUpdateContact();
 
-  const { register, handleSubmit } = useForm<ContactFormFields>();
-  const [enteredNumbers, setEnteredNumbers] = useState([1]);
-  const [photo, setPhoto] = useState<File>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ContactFormFields>();
+
+  const [enteredNumbers, setEnteredNumbers] = useState<PhoneNumbers[]>(
+    contact.phoneNumbers && contact.phoneNumbers.length > 0
+      ? [...contact.phoneNumbers]
+      : [{ id: 1, number: "", type: "" }]
+  );
 
   const onAddClickHandler = () => {
-    setEnteredNumbers((prevState: number[]) => {
-      return [...prevState, enteredNumbers.length + 1];
+    setEnteredNumbers((prevState: PhoneNumbers[]) => {
+      return [
+        ...prevState,
+        { id: enteredNumbers.length + 1, number: "", type: "" },
+      ];
     });
+  };
+
+  const onRemovePhoneClickHandler = () => {
+    const slicedArray = enteredNumbers.slice(0, -1);
+    setEnteredNumbers([...slicedArray]);
   };
 
   const onPhotoChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -55,8 +76,16 @@ export const EditContact: React.FC<EditContactProps> = ({
   };
 
   const onSubmitHandler = (data: ContactFormFields) => {
-    addContact(data, photo);
+    updateContact(contact.id, data, photo);
     reloadPageAfterEdit();
+  };
+
+  const onRemovePhoto = () => {
+    if (contact.photo && contact.photo.url) {
+      contact.photo.url = "";
+    } else {
+      setPhoto(undefined);
+    }
   };
 
   return (
@@ -70,20 +99,52 @@ export const EditContact: React.FC<EditContactProps> = ({
               <h2>Editar Contacto</h2>
             </div>
             <div className="modal-form__inputs-data">
-              <div>
-                <input type="file" name="photo" onChange={onPhotoChange} />
+              <div className="image-preview">
+                {photo || (contact.photo && contact.photo.url) ? (
+                  <>
+                    {contact.photo && contact.photo.url ? (
+                      <img src={contact.photo.url} />
+                    ) : (
+                      <img src={URL.createObjectURL(photo!)} />
+                    )}
+                    <button type="button" onClick={onRemovePhoto}>
+                      Remover
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <label
+                      className="image__upload__button"
+                      htmlFor="file-upload"
+                    >
+                      Adicionar Fotografia
+                    </label>
+                    <input
+                      id="file-upload"
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={onPhotoChange}
+                    />
+                  </>
+                )}
               </div>
               <div className="modal-form__inputs-data-field">
                 <input
                   placeholder="Nome Próprio"
-                  {...register("firstName")}
+                  {...register("firstName", { required: true })}
                   defaultValue={contact.firstName}
                 ></input>
+                {errors.firstName && (
+                  <span className="form-error">Campo Obrigatório</span>
+                )}
                 <input
                   placeholder="Apelido"
-                  {...register("lastName")}
+                  {...register("lastName", { required: true })}
                   defaultValue={contact.lastName}
                 />
+                {errors.lastName && (
+                  <span className="form-error">Campo Obrigatório</span>
+                )}
                 <input
                   placeholder="Email"
                   {...register("email")}
@@ -95,45 +156,36 @@ export const EditContact: React.FC<EditContactProps> = ({
                   defaultValue={contact.address}
                 />
               </div>
-              {/* <div>
+              <div>
                 <p>Número de telefone:</p>
-                {enteredNumbers.map((i) => (
-                  <>
+                {enteredNumbers.map((phone, i) => (
+                  <div
+                    key={`PhoneNumber_${i}`}
+                    className="modal-form__phone"
+                  >
+                    {i > 1 && (
+                      <MdRemoveCircle
+                        size={35}
+                        className="modal-form__phone-remove"
+                        onClick={onRemovePhoneClickHandler}
+                      />
+                    )}
                     <input
                       key={`PhoneNumber_${i}_number`}
                       {...register(`phoneNumbers.${i}.number`)}
-                      value={
-                        contact.phoneNumbers
-                          ? contact.phoneNumbers[i].number
-                          : undefined
-                      }
+                      defaultValue={phone.number}
                     />
-                    <select
+                    <SelectPhoneType
                       key={`PhoneNumber_${i}_type`}
-                      {...register(`phoneNumbers.${i}.type`)}
-                      defaultValue={
-                        contact.phoneNumbers
-                          ? contact.phoneNumbers[i].type
-                          : undefined
-                      }
-                    >
-                      <option key="type_1" value="telemóvel">
-                        Telemóvel
-                      </option>
-                      <option key="type_0" value="telemóvel">
-                        Trabalho
-                      </option>
-                      <option key="type_3" value="telemóvel">
-                        Casa
-                      </option>
-                      <option key="type_4" value="telemóvel">
-                        Outro
-                      </option>
-                    </select>
-                  </>
+                      selectRegister={register(`phoneNumbers.${i}.type`)}
+                      selected={phone.type}
+                    />
+                  </div>
                 ))}
-                <button onClick={onAddClickHandler}>Adicionar Contacto</button>
-              </div> */}
+                <button type="button" onClick={onAddClickHandler}>
+                  Adicionar Contacto
+                </button>
+              </div>
             </div>
           </div>
           <div className="modal-form__buttons">
@@ -141,7 +193,7 @@ export const EditContact: React.FC<EditContactProps> = ({
               Cancelar
             </button>
             <button type="submit" className="btn btn-confirm">
-              Guardar
+              Editar
             </button>
           </div>
         </form>

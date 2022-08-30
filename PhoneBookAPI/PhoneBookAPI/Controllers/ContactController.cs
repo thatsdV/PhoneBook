@@ -47,8 +47,9 @@ namespace PhoneBookAPI.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateContact([FromQuery] UpdateContactRequest request)
+        public async Task<IActionResult> UpdateContact([FromRoute(Name = "Id")] int id, [FromForm] UpdateContactRequest request)
         {
+            request.Id = id;
             return Ok(await _mediator.Send(request));
         }
 

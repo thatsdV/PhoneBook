@@ -9,7 +9,7 @@ namespace PhoneBookAPI.Core.Contracts
 
         Task<bool> DeleteContact(int id);
 
-        Task<bool> UpdateContact(int id);
+        Task<bool> UpdateContact(UpdateContactInput input);
 
         Task<GetContactByIdOutput> GetContactById(int id);
 

@@ -2,7 +2,6 @@
 using MediatR;
 using PhoneBookAPI.Application.DTOs;
 using PhoneBookAPI.Core.Contracts;
-using PhoneBookAPI.Core.Entities;
 using PhoneBookAPI.Core.Model;
 
 namespace PhoneBookAPI.Application.Commands.CreateContact

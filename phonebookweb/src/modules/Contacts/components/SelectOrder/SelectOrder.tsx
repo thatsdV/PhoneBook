@@ -1,5 +1,7 @@
 import { ChangeEvent } from "react";
 
+import "./SelectOrder.css";
+
 type SelectOrder = {
   onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
 };
@@ -15,17 +17,20 @@ export const SelectOrder: React.FC<SelectOrder> = ({ onChange }) => {
   ];
 
   return (
-    <div>
-      <select id="itemsPerPage" onChange={onChange} defaultValue={""}>
-        <option value={""} disabled hidden>
-          --
+    <select
+      id="orderBy"
+      onChange={onChange}
+      defaultValue={""}
+      className="order"
+    >
+      <option className="order-placeholder" value={""} disabled hidden>
+        Ordenar
+      </option>
+      {OrderByOptions.map((option, i) => (
+        <option key={i} value={option.value}>
+          {option.name}
         </option>
-        {OrderByOptions.map((option, i) => (
-          <option key={i} value={option.value}>
-            {option.name}
-          </option>
-        ))}
-      </select>
-    </div>
+      ))}
+    </select>
   );
 };

@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useAddContact } from "../../hooks";
-import { FaUserEdit } from "react-icons/fa";
+import { MdRemoveCircle } from "react-icons/md";
 import { TiUserAdd } from "react-icons/ti";
 
 import "./AddContact.css";
 import { ChangeEvent, useState } from "react";
+import { SelectPhoneType } from "../SelectPhoneType";
 
 interface ContactFormFields {
   firstName: string;
@@ -25,7 +26,12 @@ export const AddContact: React.FC<AddContactProps> = ({
 }) => {
   const { addContact } = useAddContact();
 
-  const { register, handleSubmit } = useForm<ContactFormFields>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ContactFormFields>();
+
   const [enteredNumbers, setEnteredNumbers] = useState([1]);
   const [photo, setPhoto] = useState<File>();
 
@@ -33,6 +39,11 @@ export const AddContact: React.FC<AddContactProps> = ({
     setEnteredNumbers((prevState: number[]) => {
       return [...prevState, enteredNumbers.length + 1];
     });
+  };
+
+  const onRemovePhoneClickHandler = () => {
+    const slicedArray = enteredNumbers.slice(0, -1);
+    setEnteredNumbers([...slicedArray]);
   };
 
   const onPhotoChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -55,43 +66,67 @@ export const AddContact: React.FC<AddContactProps> = ({
               <h2>Adicionar Contacto</h2>
             </div>
             <div className="modal-form__inputs-data">
-              <div>
-                <input type="file" name="photo" onChange={onPhotoChange} />
+              <div className="image-preview">
+                {photo ? (
+                  <>
+                    <img src={URL.createObjectURL(photo)} />
+                    <button type="button" onClick={() => setPhoto(undefined)}>
+                      Remover
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <label
+                      className="image__upload__button"
+                      htmlFor="file-upload"
+                    >
+                      Adicionar Fotografia
+                    </label>
+                    <input
+                      id="file-upload"
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={onPhotoChange}
+                    />
+                  </>
+                )}
               </div>
               <div className="modal-form__inputs-data-field">
                 <input
                   placeholder="Nome Próprio"
-                  {...register("firstName")}
+                  {...register("firstName", { required: true })}
                 ></input>
-                <input placeholder="Apelido" {...register("lastName")} />
+                {errors.firstName && (
+                  <span className="form-error">Campo Obrigatório</span>
+                )}
+                <input
+                  placeholder="Apelido"
+                  {...register("lastName", { required: true })}
+                />
+                {errors.lastName && (
+                  <span className="form-error">Campo Obrigatório</span>
+                )}
                 <input placeholder="Email" {...register("email")} />
                 <input placeholder="Morada" {...register("address")} />
               </div>
               <div>
                 <p>Número de telefone:</p>
                 {enteredNumbers.map((i) => (
-                  <div key={`PhoneNumber_${i}`}>
+                  <div key={`PhoneNumber_${i}`} className="modal-form__phone">
+                    {i != 1 && (
+                      <MdRemoveCircle
+                        size={35}
+                        className="modal-form__phone-remove"
+                        onClick={onRemovePhoneClickHandler}
+                      />
+                    )}
                     <input
                       key={`PhoneNumber_${i}_number`}
                       {...register(`phoneNumbers.${i}.number`)}
                     />
-                    <select
-                      key={`PhoneNumber_${i}_type`}
-                      {...register(`phoneNumbers.${i}.type`)}
-                    >
-                      <option key="option-telemóvel" value="telemóvel">
-                        Telemóvel
-                      </option>
-                      <option key="option-trabalho" value="trabalho">
-                        Trabalho
-                      </option>
-                      <option key="option-casa" value="casa">
-                        Casa
-                      </option>
-                      <option key="option-outro" value="outro">
-                        Outro
-                      </option>
-                    </select>
+                    <SelectPhoneType
+                      selectRegister={register(`phoneNumbers.${i}.type`)}
+                    />
                   </div>
                 ))}
                 <button type="button" onClick={onAddClickHandler}>
@@ -105,7 +140,7 @@ export const AddContact: React.FC<AddContactProps> = ({
               Cancelar
             </button>
             <button type="submit" className="btn btn-confirm">
-              Guardar
+              Adicionar
             </button>
           </div>
         </form>

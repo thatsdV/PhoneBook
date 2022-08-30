@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ContactService } from "../services";
 
 interface PhoneNumbers {
+  id: number;
   number: string;
   type: string;
 }

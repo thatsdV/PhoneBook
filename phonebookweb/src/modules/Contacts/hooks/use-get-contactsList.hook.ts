@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { ContactService } from "../services";
 
 interface PhoneNumbers {
+  id: number;
   number: string;
   type: string;
 }
@@ -14,7 +15,7 @@ interface ContactEntity {
   address: string;
   email: string;
   phoneNumbers: PhoneNumbers[];
-  photo: { name: string; url: string };
+  photo: { id: number; name: string; url: string };
   fullName: string;
 }
 
@@ -38,15 +39,15 @@ export const useGetContacts = () => {
 
   useEffect(() => {
     getContacts(
-      page ? +page : pageNumber,
+      page && +page > 0 ? +page : pageNumber,
       10,
       search ? search : searchCriteria,
       order ? order : orderBy
     );
 
-    page ?? setPageNumber(+page!);
-    search ?? setSearchCriteria(search!);
-    order ?? setOrderBy(order!);
+    if (+page! !== pageNumber && +page! !== 0) setPageNumber(+page!);
+    if (search! !== searchCriteria) setSearchCriteria(search!);
+    if (order! !== orderBy) setOrderBy(order!);
   }, [reloadPage, pageNumber, searchCriteria, orderBy]);
 
   const getContacts = (
@@ -102,7 +103,7 @@ export const useGetContacts = () => {
 
   const onDeleteAddOrEditHandler = () => {
     setReloadPage((prevState) => !prevState);
-  }
+  };
 
   return {
     pagedContacts,
@@ -112,6 +113,7 @@ export const useGetContacts = () => {
     cleanSearchCriteria,
     handlePageClick,
     onSelectOrderHandler,
-    onDeleteAddOrEditHandler
+    onDeleteAddOrEditHandler,
+    pageNumber,
   };
 };

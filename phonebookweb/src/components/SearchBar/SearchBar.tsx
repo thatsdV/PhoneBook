@@ -12,13 +12,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   onChange,
   cleanSearch,
 }) => {
-
   const [inputValue, setInputValue] = useState("");
 
   const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
     onChange(event);
-  }
+  };
 
   const onCleanClickHandler = () => {
     setInputValue("");
@@ -26,15 +25,19 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className="search-bar">
-      <input
-        type="text"
-        className="search-input"
-        placeholder={tip}
-        onChange={onChangeHandler}
-        value={inputValue}
-      />
-      <div className="search-bar-clear" onClick={onCleanClickHandler}>x</div>
-    </div>
+    <>
+      <div className="search-bar">
+        <input
+          type="text"
+          className="search-input"
+          placeholder={tip}
+          onChange={onChangeHandler}
+          value={inputValue}
+        />
+        <div className="search-bar-clear" onClick={onCleanClickHandler}>
+          x
+        </div>
+      </div>
+    </>
   );
 };

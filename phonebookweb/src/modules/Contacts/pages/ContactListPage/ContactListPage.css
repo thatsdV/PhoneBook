@@ -12,6 +12,13 @@
   margin-top: 20px;
 }
 
+.list-options {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  max-width: 45rem;
+}
+
 .contact {
   width: 100%;
   color: white;
@@ -49,4 +56,60 @@
 .contact:hover .email,
 .contact:hover .edit {
   opacity: 1;
+}
+
+.btn-back,
+.btn-back:active {
+  color: #fff;
+  border-radius: 4px;
+  background: #4CAF50;
+  text-decoration: none;
+  transition: all 0.4s;
+  line-height: normal;
+  min-width: 120px;
+  border: none;
+  min-height: 40px;
+  border-radius: 3px;
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn-back:hover,
+.btn-back:focus {
+  background: #a8a8a8;
+}
+
+.btnAdd {
+  overflow: hidden;
+  list-style: none;
+  white-space: nowrap;
+  margin-right: 10px;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #4CAF50;
+}
+
+.btnAdd label {
+  opacity: 0;
+  max-width: 0;
+  margin: 10px;
+  display: inline-block;
+  text-decoration: none;
+  transition: max-width .2s ease-out .1s, opacity 1s ease-out .1s, color;
+}
+
+.btnAdd:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btnAdd:hover label {
+  opacity: 1;
+  max-width: 200px;
+  transition: max-width 0.75s ease-out .1s, opacity .2s ease-out .05s, color .05s;
+  cursor: pointer;
 }

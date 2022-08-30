@@ -15,38 +15,40 @@ interface PhoneNumbers {
 
 const url = "https://localhost:7080/api/contact";
 
+const setFormData = (contact: Contact, picture?: File) => {
+  var formData = new FormData();
+
+  const numbers: PhoneNumbers[] =
+    contact.phoneNumbers !== undefined && contact.phoneNumbers.length > 0
+      ? contact.phoneNumbers.reduce((filtered: PhoneNumbers[], phoneNumber) => {
+          if (phoneNumber.number.length > 0) {
+            filtered.push({
+              number: phoneNumber.number,
+              type: phoneNumber.type,
+            });
+          }
+          return filtered;
+        }, [])
+      : [];
+
+  formData.append("firstName", contact.firstName);
+  formData.append("lastName", contact.lastName);
+  formData.append("fullName", `${contact.firstName} ${contact.lastName}`);
+  formData.append("address", contact.address);
+  formData.append("email", contact.email);
+  formData.append("photo", picture!);
+
+  for (var i = 0; i < numbers.length; i++) {
+    formData.append(`phoneNumbers[${i}].type`, numbers[i].type);
+    formData.append(`phoneNumbers[${i}].number`, numbers[i].number);
+  }
+
+  return formData;
+};
+
 export class ContactService {
   static CreateNewContact(contact: Contact, picture?: File) {
-    var formData = new FormData();
-
-    const numbers: PhoneNumbers[] =
-      contact.phoneNumbers !== undefined && contact.phoneNumbers.length > 0
-        ? contact.phoneNumbers.reduce(
-            (filtered: PhoneNumbers[], phoneNumber) => {
-              if (phoneNumber.number.length > 0) {
-                filtered.push({
-                  number: phoneNumber.number,
-                  type: phoneNumber.type,
-                });
-              }
-              return filtered;
-            },
-            []
-          )
-        : [];
-
-    formData.append("firstName", contact.firstName);
-    formData.append("lastName", contact.lastName);
-    formData.append("fullName", `${contact.firstName} ${contact.lastName}`);
-    formData.append("address", contact.address);
-    formData.append("email", contact.email);
-    formData.append("photo", picture!);
-
-    for (var i = 0; i < numbers.length; i++) {
-      formData.append(`phoneNumbers[${i}].type`, numbers[i].type);
-      formData.append(`phoneNumbers[${i}].number`, numbers[i].number);
-    }
-
+    const formData = setFormData(contact, picture)
     return axios.post(url, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
@@ -77,7 +79,10 @@ export class ContactService {
     return axios.delete(url.concat(`/${id}`));
   }
 
-  static UpdateContact(id: number) {
-    return axios.put(url.concat(`/${id}`));
+  static UpdateContact(id: number, contact: Contact, picture?: File) {
+    const formData = setFormData(contact, picture)
+    return axios.put(url.concat(`/${id}`), formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
   }
 }

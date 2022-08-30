@@ -1,0 +1,15 @@
+.order {
+    width: 20rem;
+    background: #383838;
+    border: 2px solid #383838;
+    color: white;
+    padding: 0px 30px;
+    border-radius: 999px;
+    transition: 0.4s;
+    padding-right: 20px;
+}
+
+.order:focus {
+    outline: none;
+    border-color: #4b9d5e;
+}
