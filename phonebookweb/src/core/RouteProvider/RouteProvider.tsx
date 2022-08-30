@@ -12,8 +12,8 @@ export const RouteProvider = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<ContactListPage />} />
-        <Route path="/group" element={<ContactGroupListPage />} />
-        <Route path="/group/:id" element={<ContactGroupDetailsPage />} />
+        {/* <Route path="/group" element={<ContactGroupListPage />} />
+        <Route path="/group/:id" element={<ContactGroupDetailsPage />} /> */}
       </Routes>
     </BrowserRouter>
   );
